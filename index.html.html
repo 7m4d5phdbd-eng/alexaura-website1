@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Aura — Strategic Planner · Founder · Investor</title>
+<meta name="description" content="Alex Aura. مخطط استراتيجي. مؤسس. مستثمر. أعمال سياحية واستشارات إدارية وصفقات معادن ثمينة. سوريا · لبنان · أوروبا.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Outfit:wght@300;400;500;600;700&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg-deep: #0a0a0a;
+    --bg-mid: #141414;
+    --bg-card: #1a1a1a;
+    --gold: #c9a961;
+    --gold-bright: #e6c378;
+    --gold-dim: #8a7340;
+    --silver: #b8b8b8;
+    --cream: #f5f0e8;
+    --text-primary: #ece6dd;
+    --text-secondary: #9b9389;
+    --text-dim: #5c574f;
+    --border: rgba(201, 169, 97, 0.15);
+    --border-light: rgba(255,255,255,0.06);
+    --serif: 'Fraunces', 'Tajawal', serif;
+    --sans: 'Outfit', 'Tajawal', sans-serif;
+    --arabic: 'Tajawal', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: var(--arabic);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    direction: rtl;
+  }
+
+  /* Noise texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(201, 169, 97, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(201, 169, 97, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 2;
+    mix-blend-mode: overlay;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    backdrop-filter: blur(20px);
+    background: rgba(10, 10, 10, 0.75);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--cream);
+    direction: ltr;
+  }
+
+  .logo span { color: var(--gold); font-style: italic; }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--sans);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    z-index: 5;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 20px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    margin-bottom: 32px;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    width: fit-content;
+    direction: ltr;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.5); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(201, 169, 97, 0); }
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(64px, 11vw, 180px);
+    line-height: 0.92;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    color: var(--cream);
+    direction: ltr;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .italic {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 400;
+  }
+
+  .hero-sub {
+    font-family: var(--arabic);
+    font-size: clamp(20px, 2.4vw, 30px);
+    line-height: 1.4;
+    color: var(--text-secondary);
+    max-width: 720px;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-light);
+    direction: ltr;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+  }
+
+  .meta-value {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* Section */
+  section { padding: 120px 48px; position: relative; z-index: 5; }
+
+  .section-header {
+    margin-bottom: 80px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 60px;
+    align-items: end;
+  }
+
+  .section-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 24px;
+    color: var(--gold);
+    font-weight: 400;
+    direction: ltr;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6vw, 80px);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.03em;
+  }
+
+  .section-title .italic { font-style: italic; color: var(--gold); }
+
+  /* About */
+  .about {
+    background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    max-width: 1400px;
+  }
+
+  .about-text p {
+    font-size: 19px;
+    line-height: 1.8;
+    color: var(--text-primary);
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  .about-text p:first-child::first-letter {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 88px;
+    line-height: 0.8;
+    color: var(--gold);
+    float: right;
+    margin-left: 16px;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  .about-aside {
+    border-right: 1px solid var(--border);
+    padding-right: 60px;
+  }
+
+  .aside-block {
+    margin-bottom: 48px;
+  }
+
+  .aside-block:last-child { margin-bottom: 0; }
+
+  .aside-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    direction: ltr;
+  }
+
+  .aside-content {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--text-primary);
+    font-weight: 400;
+  }
+
+  /* Services */
+  .services {
+    background: var(--bg-deep);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .service {
+    background: var(--bg-deep);
+    padding: 60px 48px;
+    transition: background 0.4s;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+  }
+
+  .service::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+
+  .service:hover::before { transform: translateX(0); }
+  .service:hover { background: var(--bg-mid); }
+
+  .service-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--gold-dim);
+    margin-bottom: 24px;
+    direction: ltr;
+  }
+
+  .service h3 {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .service-en {
+    font-family: var(--sans);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 20px;
+    direction: ltr;
+  }
+
+  .service p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  /* Projects */
+  .projects {
+    background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 50%, var(--bg-deep) 100%);
+  }
+
+  .project {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border-light);
+    align-items: start;
+  }
+
+  .project:last-child { border-bottom: none; }
+
+  .project-side {
+    position: sticky;
+    top: 120px;
+  }
+
+  .project-tag {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    border-radius: 100px;
+    margin-bottom: 20px;
+    direction: ltr;
+  }
+
+  .project-tag.active {
+    background: var(--gold);
+    color: var(--bg-deep);
+  }
+
+  .project h3 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--cream);
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+    direction: ltr;
+    text-align: left;
+  }
+
+  .project-subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--gold);
+    margin-bottom: 32px;
+  }
+
+  .project-desc {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .project-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    padding: 32px 0;
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 32px;
+  }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 36px;
+    color: var(--gold);
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 6px;
+    direction: ltr;
+  }
+
+  .stat-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+  }
+
+  /* Philosophy */
+  .philosophy {
+    background: var(--bg-deep);
+    padding: 160px 48px;
+    text-align: center;
+  }
+
+  .philosophy-quote {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 300;
+    line-height: 1.3;
+    color: var(--cream);
+    max-width: 1100px;
+    margin: 0 auto 32px;
+    letter-spacing: -0.02em;
+  }
+
+  .philosophy-quote .italic {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .philosophy-attribution {
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    direction: ltr;
+  }
+
+  /* Pillars */
+  .pillars {
+    background: var(--bg-mid);
+    padding: 120px 48px;
+  }
+
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    max-width: 1400px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+  }
+
+  .pillar {
+    background: var(--bg-mid);
+    padding: 60px 40px;
+    text-align: center;
+  }
+
+  .pillar-symbol {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 60px;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 24px;
+    direction: ltr;
+  }
+
+  .pillar h4 {
+    font-family: var(--serif);
+    font-size: 24px;
+    color: var(--cream);
+    margin-bottom: 12px;
+    font-weight: 400;
+  }
+
+  .pillar p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* Contact */
+  .contact {
+    padding: 160px 48px;
+    background: var(--bg-deep);
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .contact h2 {
+    font-family: var(--serif);
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+  }
+
+  .contact h2 .italic {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .contact-lead {
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+  }
+
+  .contact-links {
+    list-style: none;
+  }
+
+  .contact-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border-light);
+    transition: padding 0.3s;
+    cursor: pointer;
+  }
+
+  .contact-link:hover {
+    padding-right: 16px;
+    border-bottom-color: var(--gold);
+  }
+
+  .contact-link a {
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color: inherit;
+  }
+
+  .contact-label {
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    direction: ltr;
+  }
+
+  .contact-value {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--cream);
+    font-weight: 400;
+    direction: ltr;
+  }
+
+  /* Footer */
+  footer {
+    padding: 48px;
+    background: var(--bg-deep);
+    border-top: 1px solid var(--border-light);
+    text-align: center;
+  }
+
+  footer p {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    direction: ltr;
+  }
+
+  /* Animations */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: revealUp 1.2s ease forwards;
+  }
+
+  .reveal.d1 { animation-delay: 0.1s; }
+  .reveal.d2 { animation-delay: 0.3s; }
+  .reveal.d3 { animation-delay: 0.5s; }
+  .reveal.d4 { animation-delay: 0.7s; }
+  .reveal.d5 { animation-delay: 0.9s; }
+
+  @keyframes revealUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile */
+  @media (max-width: 968px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero, section { padding-left: 24px; padding-right: 24px; }
+    .hero { padding-top: 100px; padding-bottom: 60px; }
+    .hero-meta { gap: 24px; }
+    .meta-value { font-size: 15px; }
+    .section-header { grid-template-columns: 1fr; gap: 12px; margin-bottom: 60px; }
+    .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    .about-aside { border-right: none; border-top: 1px solid var(--border); padding-right: 0; padding-top: 48px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .service { padding: 48px 32px; }
+    .project { grid-template-columns: 1fr; gap: 32px; padding: 48px 0; }
+    .project-side { position: static; }
+    .pillars-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+    .philosophy { padding: 100px 24px; }
+    .pillars { padding: 80px 24px; }
+    .contact { padding: 100px 24px; }
+    .project-stats { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .stat-num { font-size: 24px; }
+    .stat-label { font-size: 10px; }
+    .contact-value { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="logo">Alex <span>Aura</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">عن</a></li>
+    <li><a href="#services">الخدمات</a></li>
+    <li><a href="#work">المشاريع</a></li>
+    <li><a href="#contact">تواصل</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge reveal d1">Strategic Planner · Founder · Investor</div>
+
+  <h1 class="reveal d2">
+    Alex<br>
+    <span class="italic">Aura</span>
+  </h1>
+
+  <p class="hero-sub reveal d3">
+    مخطط استراتيجي ورجل أعمال. أؤسس الشركات، أقدم استشارات الإدارة، وأستثمر في المعادن الثمينة.
+    عقلية براغماتية تؤمن بالذكاء الاصطناعي وقوة الأنظمة.
+  </p>
+
+  <div class="hero-meta reveal d4">
+    <div class="meta-item">
+      <span class="meta-label">Age</span>
+      <span class="meta-value">23</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Based</span>
+      <span class="meta-value">Aleppo · Beirut</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Markets</span>
+      <span class="meta-value">Syria · Lebanon · Europe</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Status</span>
+      <span class="meta-value" style="color: var(--gold)">Open to Opportunities</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="section-header">
+    <div class="section-num">01 — Origin</div>
+    <h2 class="section-title">من <span class="italic">أنا</span></h2>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-text">
+      <p>
+        طالب إدارة أعمال سياحية في معهد غلغامش بحلب، درست من الابتدائي إلى الثانوي في بيروت — هذا المزيج بين سوريا ولبنان شكّل عقليتي البراغماتية وقدرتي على التكيف مع البيئات المختلفة.
+      </p>
+      <p>
+        أرى نفسي CEO المستقبل. أعمل اليوم على بناء أساس قوي يجمع بين الفهم العميق للأسواق العربية والقدرة على التواصل مع الأسواق الأوروبية. أؤمن أن المشاريع الناجحة تُبنى بالأنظمة لا بالحماس، وبالصبر لا بالاندفاع.
+      </p>
+      <p>
+        أعمل على عدة مشاريع متوازية — وكالة سفر متخصصة، استشارات إدارية، صفقات في الذهب والفضة، ونظام كامل لإدارة المشاريع. كل مشروع هو جزء من رؤية أكبر.
+      </p>
+    </div>
+
+    <div class="about-aside">
+      <div class="aside-block">
+        <div class="aside-label">Mindset</div>
+        <div class="aside-content">براغماتي. متكيّف. مؤمن بالأنظمة قبل الأشخاص.</div>
+      </div>
+
+      <div class="aside-block">
+        <div class="aside-label">Approach</div>
+        <div class="aside-content">أبدأ بالتفكير. أبني الأنظمة. ثم أنفذ بانضباط.</div>
+      </div>
+
+      <div class="aside-block">
+        <div class="aside-label">Beliefs</div>
+        <div class="aside-content">الذكاء الاصطناعي + التكنولوجيا = المستقبل القريب.</div>
+      </div>
+
+      <div class="aside-block">
+        <div class="aside-label">Passions</div>
+        <div class="aside-content">الموسيقى. القصص ذات المعنى. صناعة الأنظمة.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-header">
+    <div class="section-num">02 — Services</div>
+    <h2 class="section-title">ما <span class="italic">أقدمه</span></h2>
+  </div>
+
+  <div class="services-grid">
+    <div class="service">
+      <div class="service-num">01</div>
+      <div class="service-en">Company Formation</div>
+      <h3>تأسيس الشركات</h3>
+      <p>
+        تأسيس شركات في بريطانيا والاتحاد الأوروبي للعملاء من سوريا ولبنان والعرب المغتربين. حلول قانونية ومالية كاملة للأسواق التي تواجه قيوداً مصرفية.
+      </p>
+    </div>
+
+    <div class="service">
+      <div class="service-num">02</div>
+      <div class="service-en">Business Consulting</div>
+      <h3>استشارات الأعمال</h3>
+      <p>
+        استشارات إدارية متكاملة للشركات الناشئة والمتوسطة. تحليل السوق، بناء استراتيجية النمو، وتطوير الأنظمة التشغيلية وفق منهجيات احترافية.
+      </p>
+    </div>
+
+    <div class="service">
+      <div class="service-num">03</div>
+      <div class="service-en">Project Management</div>
+      <h3>إدارة المشاريع</h3>
+      <p>
+        إدارة كاملة لدورة حياة المشروع — من فكرة على ورقة إلى منتج في السوق. اعتماد منهجيات PMI وLean Startup مع نظام PFMS المطور خصيصاً.
+      </p>
+    </div>
+
+    <div class="service">
+      <div class="service-num">04</div>
+      <div class="service-en">Precious Metals Investing</div>
+      <h3>استثمار المعادن الثمينة</h3>
+      <p>
+        صفقات متوسطة المدى في الذهب والفضة. تحليل السوق، توقيت الشراء والبيع، إدارة المحفظة الاستثمارية بفلسفة المخاطر المحسوبة.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS / WORK -->
+<section class="projects" id="work">
+  <div class="section-header">
+    <div class="section-num">03 — Selected Work</div>
+    <h2 class="section-title">المشاريع</h2>
+  </div>
+
+  <div class="project">
+    <div class="project-side">
+      <span class="project-tag active">Active · 2025-2026</span>
+      <h3>SyriaWay</h3>
+      <p class="project-subtitle">Travel Ltd. · United Kingdom</p>
+    </div>
+    <div class="project-content">
+      <p class="project-desc">
+        وكالة سفر إلكترونية مسجلة في بريطانيا تخدم المغتربين السوريين حول العالم. تحل مشكلة الدفع الدولي رغم العقوبات المالية على سوريا، عبر شركة بريطانية تقبل البطاقات الأوروبية والعالمية.
+      </p>
+      <p class="project-desc">
+        المشروع يقدم 7 خدمات: حجز الطيران، الفنادق، التأشيرات، الباقات السياحية، تحويل الأموال، خدمات B2B، والاستقبال. مع نموذج عمل قائم على العمولات وشراكات مع مكاتب سفر في سوريا وتركيا.
+      </p>
+      <div class="project-stats">
+        <div>
+          <div class="stat-num">7M+</div>
+          <div class="stat-label">Target Market</div>
+        </div>
+        <div>
+          <div class="stat-num">£12K</div>
+          <div class="stat-label">Capital Required</div>
+        </div>
+        <div>
+          <div class="stat-num">385%</div>
+          <div class="stat-label">Year 1 ROI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-side">
+      <span class="project-tag">In Development · 2025</span>
+      <h3>PFMS</h3>
+      <p class="project-subtitle">Project Foundation & Management System v2.0</p>
+    </div>
+    <div class="project-content">
+      <p class="project-desc">
+        نظام كامل لتأسيس وإدارة المشاريع، مبني على أفضل المنهجيات العالمية: PMBOK، Lean Startup، Business Model Canvas، Profit First، مع طبقة استراتيجية مستوحاة من العقلية القتالية لـ Mike Tyson.
+      </p>
+      <p class="project-desc">
+        يجمع بين 7 أنظمة فرعية: قوانين القتال، محرك المال، تقويم الهجوم، نظام العقلية، محرك النمو، منظومة الصمود، وبطاقة القائد. نظام أعتمده شخصياً وأقدمه للعملاء.
+      </p>
+      <div class="project-stats">
+        <div>
+          <div class="stat-num">07</div>
+          <div class="stat-label">Sub-Systems</div>
+        </div>
+        <div>
+          <div class="stat-num">31</div>
+          <div class="stat-label">Tools & Frameworks</div>
+        </div>
+        <div>
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Applications</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project">
+    <div class="project-side">
+      <span class="project-tag">Ongoing</span>
+      <h3>Precious Metals</h3>
+      <p class="project-subtitle">Gold & Silver Investing</p>
+    </div>
+    <div class="project-content">
+      <p class="project-desc">
+        محفظة استثمارية شخصية في الذهب والفضة بصفقات متوسطة المدى. اعتماد منهجية تحليل السوق وقراءة المؤشرات الكلية والجيوسياسية. استثمار حقيقي بأرقام حقيقية.
+      </p>
+      <p class="project-desc">
+        فلسفة الاستثمار: لا أتاجر بالعواطف، لا أطارد القمم، أصبر للقيعان. المعادن الثمينة ليست مجرد ملاذ آمن — هي تحوط ذكي ضد سياسات النقد الحديثة.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy">
+  <p class="philosophy-quote">
+    "الانضباط هو <span class="italic">الحرية</span>.<br>
+    المال في البنك هو <span class="italic">الحرية</span>.<br>
+    الأنظمة هي <span class="italic">الحرية</span>."
+  </p>
+  <p class="philosophy-attribution">— PFMS v2.0 · Alex Aura</p>
+</section>
+
+<!-- PILLARS -->
+<section class="pillars">
+  <div class="section-header" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+    <div class="section-num">04 — Operating Principles</div>
+    <h2 class="section-title">المبادئ</h2>
+  </div>
+
+  <div class="pillars-grid">
+    <div class="pillar">
+      <div class="pillar-symbol">I.</div>
+      <h4>اضرب أولاً</h4>
+      <p>الفرص لها نوافذ. الانتظار = الخسارة. أتحرك حين يتردد الآخرون.</p>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-symbol">II.</div>
+      <h4>الأنظمة قبل الأشخاص</h4>
+      <p>الشركة التي تعتمد على شخص واحد ليست شركة. أبني ما يستمر بعدي.</p>
+    </div>
+
+    <div class="pillar">
+      <div class="pillar-symbol">III.</div>
+      <h4>المال في البنك</h4>
+      <p>Profit First. التدفق النقدي قبل النمو. الاستدامة قبل الانتشار.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-grid">
+    <div>
+      <h2>لنبني <span class="italic">شيئاً</span></h2>
+      <p class="contact-lead">
+        مفتوح للشراكات، الاستشارات، وفرص الاستثمار. إذا كنت تبحث عن شريك يفكر بدقة ويتحرك بسرعة — تحدث معي.
+      </p>
+    </div>
+
+    <ul class="contact-links">
+      <li class="contact-link">
+        <a href="mailto:hello@alexaura.com">
+          <span class="contact-label">Email</span>
+          <span class="contact-value">hello@alexaura.com</span>
+        </a>
+      </li>
+      <li class="contact-link">
+        <a href="https://instagram.com/alexaura" target="_blank">
+          <span class="contact-label">Instagram</span>
+          <span class="contact-value">@alexaura</span>
+        </a>
+      </li>
+      <li class="contact-link">
+        <a href="https://linkedin.com/in/alexaura" target="_blank">
+          <span class="contact-label">LinkedIn</span>
+          <span class="contact-value">/alexaura</span>
+        </a>
+      </li>
+      <li class="contact-link">
+        <a href="https://wa.me/963XXXXXXXXX">
+          <span class="contact-label">WhatsApp</span>
+          <span class="contact-value">Direct Message</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Alex Aura · Strategic Planning, Founding & Investing · Aleppo · Beirut</p>
+</footer>
+
+</body>
+</html>
