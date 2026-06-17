@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eTravel System - Visual Walkthrough</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 36px;
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .screen-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .screen-btn {
+      padding: 15px;
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #667eea;
+      transition: all 0.3s;
+      font-size: 14px;
+    }
+
+    .screen-btn:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .screen-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .screen {
+      display: none;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .screen-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .screen-content {
+      padding: 30px;
+    }
+
+    .screen-title {
+      font-size: 24px;
+      color: #667eea;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .description {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* Portal Mockup */
+    .portal-mockup {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .portal-header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 6px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .portal-header h2 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .portal-header p {
+      color: #d4af37;
+      font-size: 14px;
+    }
+
+    .search-box {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border: 2px solid #ddd;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .package-card {
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 2px solid #f0f0f0;
+    }
+
+    .package-image {
+      background: linear-gradient(135deg, #d4af37 0%, #c49d2e 100%);
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+
+    .package-info {
+      padding: 15px;
+    }
+
+    .package-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .package-detail {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 3px;
+    }
+
+    .package-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #d4af37;
+      margin: 10px 0;
+    }
+
+    .btn {
+      background: #d4af37;
+      color: #1a1a1a;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background: #c49d2e;
+    }
+
+    /* Admin Dashboard Mockup */
+    .dashboard-mockup {
+      display: grid;
+      grid-template-columns: 1fr 4fr;
+      gap: 0;
+      background: #f5f5f5;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      min-height: 400px;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      padding: 20px;
+    }
+
+    .sidebar-item {
+      padding: 10px;
+      margin-bottom: 5px;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      border-radius: 2px;
+      color: #ccc;
+    }
+
+    .sidebar-item:hover,
+    .sidebar-item.active {
+      border-left-color: #d4af37;
+      color: #d4af37;
+    }
+
+    .dashboard-content {
+      background: white;
+      padding: 30px;
+    }
+
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-top: 3px solid #d4af37;
+      padding: 20px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .table-mockup {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      background: #f9f9f9;
+      padding: 15px;
+      font-weight: 600;
+      color: #666;
+      border-bottom: 1px solid #ddd;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 15px;
+    }
+
+    .table-row {
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .table-row:hover {
+      background: #f9f9f9;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-pending {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .badge-confirmed {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+
+    /* Flow Diagram */
+    .flow-diagram {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .flow-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .flow-number {
+      background: #667eea;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-right: 15px;
+    }
+
+    .flow-content {
+      flex: 1;
+    }
+
+    .flow-title {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .flow-description {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .arrow-down {
+      text-align: center;
+      color: #667eea;
+      font-size: 20px;
+      margin: 10px 0;
+      margin-left: 20px;
+    }
+
+    /* Login Mockup */
+    .login-mockup {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .login-header {
+      margin-bottom: 30px;
+    }
+
+    .login-header h3 {
+      font-size: 24px;
+      color: #1a1a1a;
+      margin-bottom: 5px;
+    }
+
+    .login-header p {
+      color: #d4af37;
+      font-size: 13px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: #d4af37;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .key-features {
+      background: #f0f7ff;
+      border-left: 4px solid #667eea;
+      padding: 20px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .key-features h4 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .key-features ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .key-features li {
+      padding: 8px 0;
+      color: #666;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .key-features li:last-child {
+      border-bottom: none;
+    }
+
+    .key-features li:before {
+      content: "✓ ";
+      color: #667eea;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      padding: 20px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-mockup {
+        grid-template-columns: 1fr;
+      }
+
+      .portal-mockup {
+        padding: 10px;
+      }
+
+      .packages-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .table-header,
+      .table-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌍 eTravel Agency System</h1>
+      <p>Visual Walkthrough - See What It Looks Like Before You Start</p>
+    </header>
+
+    <div class="screen-selector">
+      <button class="screen-btn active" onclick="showScreen('home')">Home</button>
+      <button class="screen-btn" onclick="showScreen('portal')">Customer Portal</button>
+      <button class="screen-btn" onclick="showScreen('booking')">Booking Form</button>
+      <button class="screen-btn" onclick="showScreen('login')">Admin Login</button>
+      <button class="screen-btn" onclick="showScreen('dashboard')">Admin Dashboard</button>
+      <button class="screen-btn" onclick="showScreen('flow')">How It Works</button>
+    </div>
+
+    <!-- Home Screen -->
+    <div id="home" class="screen active">
+      <div class="screen-content">
+        <div class="screen-title">Welcome to eTravel Agency</div>
+        <p class="description">
+          This is a visual walkthrough of your complete travel booking system.
+          Click the buttons above to see what each part looks like!
+        </p>
+
+        <div class="key-features">
+          <h4>What You're Getting:</h4>
+          <ul>
+            <li><strong>Customer Portal:</strong> Where travelers browse and book trips</li>
+            <li><strong>Admin Dashboard:</strong> Where you manage everything</li>
+            <li><strong>Secure Login:</strong> Protect your admin area with passwords</li>
+            <li><strong>Real Data:</strong> All information stored in Airtable</li>
+            <li><strong>Live Bookings:</strong> Customers can submit and track bookings</li>
+          </ul>
+        </div>
+
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <div class="flow-number">1</div>
+            <div class="flow-content">
+              <div class="flow-title">👥 Customers Visit Portal</div>
+              <div class="flow-description">Browse travel packages, search by destination, see prices</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+
+          <div class="flow-step">
+            <div class="flow-number">2</div>
+            <div class="flow-content">
+              <div class="flow-title">📝 Customer Submits Booking</div>
+              <div class="flow-description">Fill in dates, number of travelers, special requests</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+
+          <div class="flow-step">
+            <div class="flow-number">3</div>
+            <div class="flow-content">
+              <div class="flow-title">📊 Data Saved to Airtable</div>
+              <div class="flow-description">Booking appears in admin dashboard automatically</div>
+            </div>
+          </div>
+          <div class="arrow-down">↓</div>
+
+          <div class="flow-step">
+            <div class="flow-number">4</div>
+            <div class="flow-content">
+              <div class="flow-title">👨‍💼 You Manage in Admin</div>
+              <div class="flow-description">View bookings, update status, track payments, generate reports</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #fff3e0; border-left: 4px solid #fbc02d; padding: 20px; border-radius: 4px; margin-top: 20px;">
+          <strong style="color: #f57c00;">💡 TIP:</strong> Click on each button above to see what each page looks like!
+        </div>
+      </div>
+    </div>
+
+    <!-- Portal Screen -->
+    <div id="portal" class="screen">
+      <div class="screen-header">👥 CUSTOMER PORTAL - What Customers See</div>
+      <div class="screen-content">
+        <p class="description">
+          This is the public website where customers come to browse and book travel packages.
+          It's simple, clean, and easy to use.
+        </p>
+
+        <div class="portal-mockup">
+          <div class="portal-header">
+            <h2>eTravel Agency</h2>
+            <p>Discover Your Next Adventure</p>
+          </div>
+
+          <div class="search-box">
+            <input type="text" placeholder="🔍 Search destination..." value="">
+            <p style="font-size: 12px; color: #999; margin-top: 10px; text-align: center;">Search, filter by price & duration</p>
+          </div>
+
+          <div class="packages-grid">
+            <div class="package-card">
+              <div class="package-image">📍 Paris</div>
+              <div class="package-info">
+                <div class="package-name">Paris City Tour</div>
+                <div class="package-detail">🇫🇷 France</div>
+                <div class="package-detail">⏱️ 7 Days</div>
+                <div class="package-price">$1,500/person</div>
+                <button class="btn">View Details</button>
+              </div>
+            </div>
+
+            <div class="package-card">
+              <div class="package-image">📍 Tokyo</div>
+              <div class="package-info">
+                <div class="package-name">Japanese Adventure</div>
+                <div class="package-detail">🇯🇵 Japan</div>
+                <div class="package-detail">⏱️ 10 Days</div>
+                <div class="package-price">$2,500/person</div>
+                <button class="btn">View Details</button>
+              </div>
+            </div>
+
+            <div class="package-card">
+              <div class="package-image">📍 Barcelona</div>
+              <div class="package-info">
+                <div class="package-name">Spain Explorer</div>
+                <div class="package-detail">🇪🇸 Spain</div>
+                <div class="package-detail">⏱️ 5 Days</div>
+                <div class="package-price">$1,200/person</div>
+                <button class="btn">View Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="key-features">
+          <h4>What Customers Can Do Here:</h4>
+          <ul>
+            <li>Search packages by destination name</li>
+            <li>Filter by price range ($500 - $5000)</li>
+            <li>Filter by trip duration (3 days - 30+ days)</li>
+            <li>Click "View Details" to see full itinerary</li>
+            <li>See what's included (flights, hotels, tours)</li>
+            <li>Fill booking form with their information</li>
+            <li>Get booking confirmation with ID</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Booking Form Screen -->
+    <div id="booking" class="screen">
+      <div class="screen-header">📝 BOOKING FORM - What Customers Fill Out</div>
+      <div class="screen-content">
+        <p class="description">
+          When a customer clicks "View Details" on a package, they see the full details and can fill out a booking form.
+        </p>
+
+        <div style="background: white; padding: 30px; border-radius: 8px; margin-bottom: 20px;">
+          <h3 style="margin-bottom: 20px;">Package Details Modal</h3>
+
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 6px;">
+              <div style="font-size: 12px; color: #999; font-weight: 600; margin-bottom: 5px;">DESTINATION</div>
+              <div style="font-size: 18px; font-weight: 600; color: #1a1a1a;">Paris, France</div>
+            </div>
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 6px;">
+              <div style="font-size: 12px; color: #999; font-weight: 600; margin-bottom: 5px;">DURATION</div>
+              <div style="font-size: 18px; font-weight: 600; color: #1a1a1a;">7 Days</div>
+            </div>
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 6px;">
+              <div style="font-size: 12px; color: #999; font-weight: 600; margin-bottom: 5px;">PRICE PER PERSON</div>
+              <div style="font-size: 18px; font-weight: 600; color: #d4af37;">$1,500</div>
+            </div>
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 6px;">
+              <div style="font-size: 12px; color: #999; font-weight: 600; margin-bottom: 5px;">AVAILABLE SPOTS</div>
+              <div style="font-size: 18px; font-weight: 600; color: #1a1a1a;">15 of 20</div>
+            </div>
+          </div>
+
+          <div style="border: 1px solid #ddd; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+            <h4 style="margin-bottom: 10px;">Description</h4>
+            <p style="color: #666; line-height: 1.6;">Visit the City of Light! Explore the Eiffel Tower, Louvre Museum, historic neighborhoods, and world-class restaurants.</p>
+          </div>
+
+          <div style="border: 1px solid #ddd; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+            <h4 style="margin-bottom: 10px;">Included Services</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+              <span style="background: #f0f0f0; padding: 6px 12px; border-radius: 20px; font-size: 12px;">✓ Flights</span>
+              <span style="background: #f0f0f0; padding: 6px 12px; border-radius: 20px; font-size: 12px;">✓ Hotel</span>
+              <span style="background: #f0f0f0; padding: 6px 12px; border-radius: 20px; font-size: 12px;">✓ Tours</span>
+              <span style="background: #f0f0f0; padding: 6px 12px; border-radius: 20px; font-size: 12px;">✓ Meals</span>
+            </div>
+          </div>
+
+          <div style="background: #f9f9f9; padding: 20px; border-radius: 6px; border: 1px solid #e0e0e0;">
+            <h4 style="margin-bottom: 15px;">📝 Book This Trip</h4>
+
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" placeholder="John Smith" value="">
+            </div>
+
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" placeholder="john@example.com" value="">
+            </div>
+
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="tel" placeholder="555-123-4567" value="">
+            </div>
+
+            <div class="form-group">
+              <label>Departure Date *</label>
+              <input type="date" value="">
+            </div>
+
+            <div class="form-group">
+              <label>Return Date *</label>
+              <input type="date" value="">
+            </div>
+
+            <div class="form-group">
+              <label>Number of Travelers *</label>
+              <input type="number" placeholder="2" value="">
+            </div>
+
+            <div class="form-group">
+              <label>Special Requests</label>
+              <input type="text" placeholder="Any special needs?" value="">
+            </div>
+
+            <button class="btn">Book Now</button>
+          </div>
+        </div>
+
+        <div class="key-features">
+          <h4>What Happens After Booking:</h4>
+          <ul>
+            <li>Customer sees "Booking successful!" message</li>
+            <li>Gets a Booking ID (e.g., BK-1718627462)</li>
+            <li>Booking appears in your Admin Dashboard</li>
+            <li>You can see all their details</li>
+            <li>You can update the status and track payment</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login" class="screen">
+      <div class="screen-header">🔐 ADMIN LOGIN - How You Get In</div>
+      <div class="screen-content">
+        <p class="description">
+          This is a secure login page where only staff members can access the admin dashboard.
+        </p>
+
+        <div class="login-mockup">
+          <div class="login-header">
+            <h3>eTravel Agency</h3>
+            <p>Admin Dashboard</p>
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" placeholder="your@email.com" value="">
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" placeholder="••••••••" value="">
+          </div>
+
+          <button class="login-btn">Sign In</button>
+
+          <p style="text-align: center; font-size: 12px; color: #999; margin-top: 15px;">
+            Your account is checked against the database
+          </p>
+        </div>
+
+        <div class="key-features" style="margin-top: 30px;">
+          <h4>Security Features:</h4>
+          <ul>
+            <li>Only approved staff can login</li>
+            <li>Email and password required</li>
+            <li>Session automatically expires after 24 hours</li>
+            <li>Each person has their own login</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboard" class="screen">
+      <div class="screen-header">👨‍💼 ADMIN DASHBOARD - Where You Manage Everything</div>
+      <div class="screen-content">
+        <p class="description">
+          After you login, you get access to a complete management system. Here's what it looks like:
+        </p>
+
+        <div class="dashboard-mockup">
+          <div class="sidebar">
+            <div style="font-size: 14px; font-weight: 600; margin-bottom: 20px;">eTravel Agency</div>
+            <div class="sidebar-item active">📊 Dashboard</div>
+            <div class="sidebar-item">👥 Clients</div>
+            <div class="sidebar-item">📅 Bookings</div>
+            <div class="sidebar-item">📦 Packages</div>
+            <div class="sidebar-item">💳 Payments</div>
+            <div class="sidebar-item">📈 Analytics</div>
+            <div style="border-top: 1px solid #444; margin-top: 20px; padding-top: 20px;">
+              <div class="sidebar-item" style="color: #ff6b6b;">🚪 Logout</div>
+            </div>
+          </div>
+
+          <div class="dashboard-content">
+            <div style="margin-bottom: 30px;">
+              <h2 style="color: #1a1a1a; margin-bottom: 10px;">Dashboard Overview</h2>
+              <p style="color: #666; font-size: 14px;">Welcome! Here are your key metrics.</p>
+            </div>
+
+            <div class="stat-cards">
+              <div class="stat-card">
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-value">42</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value">$84,000</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Active Clients</div>
+                <div class="stat-value">28</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Pending Payments</div>
+                <div class="stat-value">7</div>
+              </div>
+            </div>
+
+            <h3 style="margin-bottom: 15px; color: #1a1a1a;">Recent Bookings</h3>
+            <div class="table-mockup">
+              <div class="table-header">
+                <div>Booking ID</div>
+                <div>Client</div>
+                <div>Status</div>
+                <div>Amount</div>
+              </div>
+              <div class="table-row">
+                <div>BK-1718627462</div>
+                <div>Jane Doe</div>
+                <div><span class="badge badge-pending">Pending</span></div>
+                <div>$3,000</div>
+              </div>
+              <div class="table-row">
+                <div>BK-1718627401</div>
+                <div>John Smith</div>
+                <div><span class="badge badge-confirmed">Confirmed</span></div>
+                <div>$5,500</div>
+              </div>
+              <div class="table-row">
+                <div>BK-1718627340</div>
+                <div>Mary Johnson</div>
+                <div><span class="badge badge-confirmed">Confirmed</span></div>
+                <div>$2,000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="key-features" style="margin-top: 20px;">
+          <h4>Admin Dashboard Features:</h4>
+          <ul>
+            <li>📊 Overview: KPI cards showing total bookings, revenue, clients, pending payments</li>
+            <li>👥 Clients: View, add, edit, delete customer records</li>
+            <li>📅 Bookings: Manage all bookings, update status (Pending → Confirmed → Completed)</li>
+            <li>📦 Packages: Create, edit, delete travel packages and inventory</li>
+            <li>💳 Payments: Track payment status, mark as paid, view history</li>
+            <li>📈 Analytics: Revenue reports, booking status breakdown, top destinations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow Diagram Screen -->
+    <div id="flow" class="screen">
+      <div class="screen-header">🔄 HOW IT ALL WORKS TOGETHER</div>
+      <div class="screen-content">
+        <p class="description">
+          Here's the complete flow from start to finish:
+        </p>
+
+        <div class="flow-diagram">
+          <div class="flow-step">
+            <div class="flow-number">1️⃣</div>
+            <div class="flow-content">
+              <div class="flow-title">Customer Visits Portal</div>
+              <div class="flow-description">
+                They go to /pages/portal.html<br>
+                They see all your travel packages
+              </div>
+            </div>
+          </div>
+          <div class="arrow-down">⬇️</div>
+
+          <div class="flow-step">
+            <div class="flow-number">2️⃣</div>
+            <div class="flow-content">
+              <div class="flow-title">Customer Searches & Browses</div>
+              <div class="flow-description">
+                They search by destination<br>
+                They filter by price and duration<br>
+                They click "View Details"
+              </div>
+            </div>
+          </div>
+          <div class="arrow-down">⬇️</div>
+
+          <div class="flow-step">
+            <div class="flow-number">3️⃣</div>
+            <div class="flow-content">
+              <div class="flow-title">Customer Fills Booking Form</div>
+              <div class="flow-description">
+                Their name, email, phone<br>
+                Departure and return dates<br>
+                Number of travelers<br>
+                Any special requests
+              </div>
+            </div>
+          </div>
+          <div class="arrow-down">⬇️</div>
+
+          <div class="flow-step">
+            <div class="flow-number">4️⃣</div>
+            <div class="flow-content">
+              <div class="flow-title">Form Submitted to Airtable</div>
+              <div class="flow-description">
+                Website sends data to Airtable database<br>
+                Customer gets confirmation with Booking ID<br>
+                Status set to "Pending"
+              </div>
+            </div>
+          </div>
+          <div class="arrow-down">⬇️</div>
+
+          <div class="flow-step">
+            <div class="flow-number">5️⃣</div>
+            <div class="flow-content">
+              <div class="flow-title">You Login to Admin Dashboard</div>
+              <div class="flow-description">
+                Go to /pages/admin-login.html<br>
+                Enter your email and password<br>
+                You see all bookings instantly
+              </div>
+            </div>
+          </div>
+          <div class="arrow-down">⬇️</div>
+
+          <div class="flow-step">
+            <div class="flow-number">6️⃣</div>
+            <div class="flow-content">
+              <div class="flow-title">You Manage the Booking</div>
+              <div class="flow-description">
+                See customer details<br>
+                Update booking status<br>
+                Track payment<br>
+                Send confirmation to customer
+              </div>
+            </div>
+          </div>
+          <div class="arrow-down">⬇️</div>
+
+          <div class="flow-step">
+            <div class="flow-number">7️⃣</div>
+            <div class="flow-content">
+              <div class="flow-title">Everything is Tracked</div>
+              <div class="flow-description">
+                See all your revenue<br>
+                View booking statistics<br>
+                Track which destinations are popular<br>
+                Monitor payment status
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #e8f5e9; border-left: 4px solid #388e3c; padding: 20px; border-radius: 4px; margin-top: 30px;">
+          <strong style="color: #2e7d32;">✓ All automatic!</strong> No manual data entry - everything flows from the website to Airtable automatically.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>eTravel Agency System | Interactive Visual Walkthrough | Ready to get started? Follow the BEGINNER_GUIDE.md</p>
+  </footer>
+
+  <script>
+    function showScreen(screenId) {
+      // Hide all screens
+      const screens = document.querySelectorAll('.screen');
+      screens.forEach(screen => {
+        screen.classList.remove('active');
+      });
+
+      // Remove active from all buttons
+      const buttons = document.querySelectorAll('.screen-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show selected screen
+      const selectedScreen = document.getElementById(screenId);
+      if (selectedScreen) {
+        selectedScreen.classList.add('active');
+      }
+
+      // Add active to clicked button
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
