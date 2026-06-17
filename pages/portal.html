@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Portal - eTravel Agency</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    header p {
+      color: #d4af37;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Search & Filter Section */
+    .filter-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-section h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #1a1a1a;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .filter-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-primary {
+      flex: 1;
+      padding: 12px;
+      background: #d4af37;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: #c49d2e;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 12px;
+      background: #e0e0e0;
+      color: #333;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+
+    /* Packages Grid */
+    .packages-section {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .package-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .package-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .package-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #d4af37 0%, #c49d2e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .package-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .package-content {
+      padding: 20px;
+    }
+
+    .package-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .package-destination {
+      color: #d4af37;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .package-duration {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .package-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #d4af37;
+      margin-bottom: 15px;
+    }
+
+    .package-services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 15px;
+    }
+
+    .service-tag {
+      background: #f0f0f0;
+      color: #666;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .view-btn {
+      width: 100%;
+      padding: 10px;
+      background: #d4af37;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .view-btn:hover {
+      background: #c49d2e;
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #d4af37;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      font-size: 16px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideIn 0.3s;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 22px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-btn:hover {
+      color: #d4af37;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-section {
+      margin-bottom: 20px;
+    }
+
+    .modal-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #1a1a1a;
+    }
+
+    .modal-section p {
+      color: #666;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .detail-item {
+      background: #f5f5f5;
+      padding: 12px;
+      border-radius: 4px;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .detail-value.price {
+      color: #d4af37;
+    }
+
+    /* Booking Form */
+    .booking-form {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .form-full {
+      grid-column: 1 / -1;
+    }
+
+    .alert {
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .alert.error {
+      background: #fee;
+      color: #c00;
+      border: 1px solid #f99;
+    }
+
+    .alert.success {
+      background: #efe;
+      color: #060;
+      border: 1px solid #9f9;
+    }
+
+    .btn-book {
+      width: 100%;
+      padding: 12px;
+      background: #d4af37;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn-book:hover {
+      background: #c49d2e;
+    }
+
+    .btn-book:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    footer {
+      background: #1a1a1a;
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .packages-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>eTravel Agency</h1>
+    <p>Discover Your Next Adventure</p>
+  </header>
+
+  <div class="container">
+    <!-- Search & Filter -->
+    <div class="filter-section">
+      <h2>Find Your Perfect Trip</h2>
+      <form id="filterForm" class="filters">
+        <div class="filter-group">
+          <label for="searchDestination">Destination</label>
+          <input
+            type="text"
+            id="searchDestination"
+            placeholder="Search destination..."
+          />
+        </div>
+
+        <div class="filter-group">
+          <label for="minPrice">Min Price ($)</label>
+          <input type="number" id="minPrice" placeholder="0" min="0" />
+        </div>
+
+        <div class="filter-group">
+          <label for="maxPrice">Max Price ($)</label>
+          <input type="number" id="maxPrice" placeholder="10000" min="0" />
+        </div>
+
+        <div class="filter-group">
+          <label for="duration">Duration (Days)</label>
+          <select id="duration">
+            <option value="">Any Duration</option>
+            <option value="3">Up to 3 days</option>
+            <option value="7">Up to 7 days</option>
+            <option value="14">Up to 14 days</option>
+            <option value="30">30+ days</option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button type="submit" class="btn-primary">Search</button>
+          <button type="reset" class="btn-secondary">Clear Filters</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Packages Section -->
+    <div class="packages-section">
+      <h2 class="section-title">Available Packages</h2>
+      <div id="packagesContainer" class="packages-grid">
+        <div class="loading">
+          <span class="spinner"></span>Loading packages...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Package Detail Modal -->
+  <div id="packageModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalPackageName">Package Name</h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="modalAlert" class="alert"></div>
+
+        <div class="modal-section">
+          <div class="details-grid">
+            <div class="detail-item">
+              <div class="detail-label">Destination</div>
+              <div id="modalDestination" class="detail-value">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Duration</div>
+              <div id="modalDuration" class="detail-value">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Price per Person</div>
+              <div id="modalPrice" class="detail-value price">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Available Capacity</div>
+              <div id="modalCapacity" class="detail-value">-</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h3>Description</h3>
+          <p id="modalDescription">-</p>
+        </div>
+
+        <div class="modal-section">
+          <h3>Highlights</h3>
+          <p id="modalHighlights">-</p>
+        </div>
+
+        <div class="modal-section">
+          <h3>Included Services</h3>
+          <div id="modalServices" class="package-services"></div>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="booking-form">
+          <h3>Book This Trip</h3>
+          <form id="bookingForm" onsubmit="submitBooking(event)">
+            <div id="bookingAlert" class="alert"></div>
+
+            <div class="form-row">
+              <div class="form-group form-full">
+                <label for="clientName">Full Name *</label>
+                <input
+                  type="text"
+                  id="clientName"
+                  name="clientName"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="clientEmail">Email *</label>
+                <input
+                  type="email"
+                  id="clientEmail"
+                  name="clientEmail"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="clientPhone">Phone</label>
+                <input
+                  type="tel"
+                  id="clientPhone"
+                  name="clientPhone"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="departureDate">Preferred Departure Date *</label>
+                <input
+                  type="date"
+                  id="departureDate"
+                  name="departureDate"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="returnDate">Return Date *</label>
+                <input
+                  type="date"
+                  id="returnDate"
+                  name="returnDate"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="numTravelers">Number of Travelers *</label>
+                <input
+                  type="number"
+                  id="numTravelers"
+                  name="numTravelers"
+                  min="1"
+                  value="1"
+                  required
+                />
+              </div>
+
+              <div class="form-group form-full">
+                <label for="specialRequests">Special Requests</label>
+                <textarea
+                  id="specialRequests"
+                  name="specialRequests"
+                  rows="3"
+                  placeholder="Any special needs or preferences?"
+                ></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-book">Book Now</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 eTravel Agency. All rights reserved. | <a href="/" style="color: #d4af37; text-decoration: none;">Back to Home</a></p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/airtable-api.js"></script>
+  <script>
+    let allPackages = [];
+    let selectedPackage = null;
+    let publicApi = null;
+
+    // Initialize API
+    function initializeApi() {
+      if (AIRTABLE_CONFIG.publicToken) {
+        publicApi = new AirtableAPI(AIRTABLE_CONFIG.baseId, AIRTABLE_CONFIG.publicToken);
+      } else {
+        console.warn('Public token not configured. Using admin token for read-only access.');
+        publicApi = new AirtableAPI(AIRTABLE_CONFIG.baseId, AIRTABLE_CONFIG.adminToken);
+      }
+    }
+
+    // Load all packages on page load
+    async function loadPackages() {
+      try {
+        initializeApi();
+        const packages = await publicApi.getRecords(
+          AIRTABLE_CONFIG.tables.packages.id,
+          {
+            filterByFormula: '{Status} = "Active"'
+          }
+        );
+
+        allPackages = packages;
+        displayPackages(allPackages);
+      } catch (error) {
+        console.error('Error loading packages:', error);
+        document.getElementById('packagesContainer').innerHTML =
+          '<div class="no-results">Error loading packages. Please refresh the page.</div>';
+      }
+    }
+
+    // Display packages in grid
+    function displayPackages(packages) {
+      const container = document.getElementById('packagesContainer');
+
+      if (packages.length === 0) {
+        container.innerHTML = '<div class="no-results">No packages found matching your criteria.</div>';
+        return;
+      }
+
+      container.innerHTML = packages
+        .map(pkg => {
+          const fields = pkg.fields;
+          const pricePerPerson = fields['Price per Person'] || 0;
+          const availability = (fields['Max Capacity'] || 0) - (fields['Current Bookings'] || 0);
+
+          return `
+            <div class="package-card" onclick="openModal('${pkg.id}')">
+              <div class="package-image">${fields['Image URL'] ? `<img src="${fields['Image URL']}" alt="${fields.Name}">` : 'No Image'}</div>
+              <div class="package-content">
+                <div class="package-name">${fields.Name || 'Package'}</div>
+                <div class="package-destination">${fields['Destination Name'] || 'TBD'}</div>
+                <div class="package-duration">${fields['Duration (Days)'] || 0} Days</div>
+                <div class="package-price">$${pricePerPerson.toFixed(2)}</div>
+                <div class="package-services">
+                  ${(fields['Included Services'] || []).map(service => `<span class="service-tag">${service}</span>`).join('')}
+                </div>
+                <button class="view-btn" onclick="openModal('${pkg.id}', event)">View Details</button>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    // Open package detail modal
+    function openModal(packageId, event) {
+      if (event) event.stopPropagation();
+
+      selectedPackage = allPackages.find(p => p.id === packageId);
+      if (!selectedPackage) return;
+
+      const fields = selectedPackage.fields;
+      const availability = (fields['Max Capacity'] || 0) - (fields['Current Bookings'] || 0);
+      const pricePerPerson = fields['Price per Person'] || 0;
+
+      document.getElementById('modalPackageName').textContent = fields.Name || 'Package';
+      document.getElementById('modalDestination').textContent = fields['Destination Name'] || 'TBD';
+      document.getElementById('modalDuration').textContent = (fields['Duration (Days)'] || 0) + ' days';
+      document.getElementById('modalPrice').textContent = '$' + pricePerPerson.toFixed(2);
+      document.getElementById('modalCapacity').textContent = availability + ' of ' + (fields['Max Capacity'] || 0);
+      document.getElementById('modalDescription').textContent = fields.Description || 'No description available.';
+      document.getElementById('modalHighlights').textContent = fields.Highlights || 'No highlights available.';
+
+      const servicesHtml = (fields['Included Services'] || [])
+        .map(service => `<span class="service-tag">${service}</span>`)
+        .join('');
+      document.getElementById('modalServices').innerHTML = servicesHtml || '<p style="color: #999; font-size: 14px;">No services listed.</p>';
+
+      // Clear form
+      document.getElementById('bookingForm').reset();
+      document.getElementById('bookingAlert').innerHTML = '';
+      document.getElementById('bookingAlert').classList.remove('success', 'error');
+
+      // Set min dates
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('departureDate').min = today;
+
+      document.getElementById('packageModal').style.display = 'block';
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('packageModal').style.display = 'none';
+      selectedPackage = null;
+    }
+
+    // Submit booking
+    async function submitBooking(event) {
+      event.preventDefault();
+
+      if (!selectedPackage) return;
+
+      const form = document.getElementById('bookingForm');
+      const clientName = document.getElementById('clientName').value;
+      const clientEmail = document.getElementById('clientEmail').value;
+      const clientPhone = document.getElementById('clientPhone').value || '';
+      const departureDate = document.getElementById('departureDate').value;
+      const returnDate = document.getElementById('returnDate').value;
+      const numTravelers = parseInt(document.getElementById('numTravelers').value);
+      const specialRequests = document.getElementById('specialRequests').value || '';
+
+      const alert = document.getElementById('bookingAlert');
+
+      // Validation
+      if (!clientName || !clientEmail || !departureDate || !returnDate || !numTravelers) {
+        alert.textContent = 'Please fill in all required fields.';
+        alert.classList.add('error');
+        alert.classList.remove('success');
+        alert.style.display = 'block';
+        return;
+      }
+
+      if (new Date(returnDate) <= new Date(departureDate)) {
+        alert.textContent = 'Return date must be after departure date.';
+        alert.classList.add('error');
+        alert.classList.remove('success');
+        alert.style.display = 'block';
+        return;
+      }
+
+      try {
+        // Calculate total cost
+        const pricePerPerson = selectedPackage.fields['Price per Person'] || 0;
+        const totalCost = pricePerPerson * numTravelers;
+
+        // Create or update client
+        let clientId = null;
+        const existingClients = await publicApi.getRecords(
+          AIRTABLE_CONFIG.tables.clients.id,
+          { filterByFormula: `{Email} = "${clientEmail}"` }
+        );
+
+        if (existingClients.length > 0) {
+          clientId = existingClients[0].id;
+        } else {
+          const newClient = await publicApi.createRecord(
+            AIRTABLE_CONFIG.tables.clients.id,
+            {
+              'Name': clientName,
+              'Email': clientEmail,
+              'Phone': clientPhone,
+              'Country': '',
+              'Date Created': new Date().toISOString().split('T')[0],
+              'Client Status': 'Active'
+            }
+          );
+          clientId = newClient.id;
+        }
+
+        // Create booking
+        const bookingId = 'BK-' + Date.now();
+        await publicApi.createRecord(
+          AIRTABLE_CONFIG.tables.bookings.id,
+          {
+            'Booking ID': bookingId,
+            'Client Name': clientName,
+            'Trip Type': 'Package Booking',
+            'Destination': selectedPackage.fields['Destination Name'] || 'TBD',
+            'Departure Date': departureDate,
+            'Return Date': returnDate,
+            'Number of Travelers': numTravelers,
+            'Status': 'Pending',
+            'Total Cost': totalCost,
+            'Payment Status': 'Unpaid',
+            'Notes': specialRequests,
+            'Date Created': new Date().toISOString().split('T')[0]
+          }
+        );
+
+        // Update package booking count
+        const currentBookings = (selectedPackage.fields['Current Bookings'] || 0) + 1;
+        await publicApi.updateRecord(
+          AIRTABLE_CONFIG.tables.packages.id,
+          selectedPackage.id,
+          {
+            'Current Bookings': currentBookings
+          }
+        );
+
+        alert.textContent = `Booking successful! Your booking ID is ${bookingId}. We'll contact you shortly to confirm.`;
+        alert.classList.add('success');
+        alert.classList.remove('error');
+        alert.style.display = 'block';
+
+        setTimeout(() => {
+          form.reset();
+          closeModal();
+          loadPackages();
+        }, 2000);
+      } catch (error) {
+        console.error('Booking error:', error);
+        alert.textContent = 'Error submitting booking. Please try again.';
+        alert.classList.add('error');
+        alert.classList.remove('success');
+        alert.style.display = 'block';
+      }
+    }
+
+    // Filter functionality
+    document.getElementById('filterForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const destination = document.getElementById('searchDestination').value.toLowerCase();
+      const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+      const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+      const maxDuration = parseInt(document.getElementById('duration').value) || Infinity;
+
+      const filtered = allPackages.filter(pkg => {
+        const fields = pkg.fields;
+        const destMatch =
+          !destination ||
+          (fields['Destination Name'] || '').toLowerCase().includes(destination) ||
+          (fields.Name || '').toLowerCase().includes(destination);
+        const priceMatch =
+          (fields['Price per Person'] || 0) >= minPrice &&
+          (fields['Price per Person'] || 0) <= maxPrice;
+        const durationMatch = (fields['Duration (Days)'] || 0) <= maxDuration;
+
+        return destMatch && priceMatch && durationMatch;
+      });
+
+      displayPackages(filtered);
+    });
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('packageModal');
+      if (event.target == modal) {
+        closeModal();
+      }
+    };
+
+    // Load packages on page load
+    document.addEventListener('DOMContentLoaded', loadPackages);
+  </script>
+</body>
+</html>
