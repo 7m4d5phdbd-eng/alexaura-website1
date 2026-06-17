@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyriaWay - Discover Syria | اكتشف سوريا</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-gold: #d4af37;
+            --primary-dark: #1a1a1a;
+            --primary-light: #f5f5f5;
+            --accent-blue: #0066cc;
+            --success-green: #2ecc71;
+            --danger-red: #e74c3c;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-light);
+            color: var(--text-dark);
+        }
+
+        /* RTL Support */
+        [dir="rtl"] body, body[dir="rtl"] {
+            font-family: 'Segoe UI', 'Tahoma', sans-serif;
+        }
+        [dir="rtl"] .nav-menu { flex-direction: row-reverse; }
+        [dir="rtl"] .header-content { flex-direction: row-reverse; }
+        [dir="rtl"] .package-details { direction: rtl; }
+        [dir="rtl"] th, [dir="rtl"] td { text-align: right; }
+        [dir="rtl"] .dashboard-card { border-top: 4px solid var(--primary-gold); }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #333 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .logo:hover { color: #fff; }
+
+        .nav-menu {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active { color: var(--primary-gold); }
+
+        .lang-toggle {
+            background: var(--primary-gold);
+            color: var(--primary-dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .lang-toggle:hover { background: #f5c962; transform: scale(1.05); }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .btn-primary { background: var(--primary-gold); color: var(--primary-dark); }
+        .btn-primary:hover { background: #f5c962; transform: translateY(-2px); }
+        .btn-secondary { background: var(--accent-blue); color: white; }
+        .btn-secondary:hover { background: #0052a3; }
+        .btn-success { background: var(--success-green); color: white; }
+        .btn-block { width: 100%; margin-top: 15px; }
+
+        main { margin-top: 70px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #333 100%);
+            color: white;
+            padding: 70px 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: '🏛️ 🕌 🌅 🏖️ ⛰️';
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            font-size: 30px;
+            opacity: 0.15;
+            letter-spacing: 30px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 48px; margin-bottom: 20px; }
+        .hero p { font-size: 18px; margin-bottom: 15px; color: #ccc; }
+        .hero .tagline { color: var(--primary-gold); font-size: 22px; font-weight: 600; }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .package-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .package-image {
+            background: linear-gradient(135deg, var(--primary-gold), #f5c962);
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+        }
+        .package-content { padding: 20px; }
+        .package-content h3 { color: var(--primary-gold); margin-bottom: 10px; }
+        .package-badge {
+            display: inline-block;
+            background: var(--accent-blue);
+            color: white;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .package-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        .detail { color: var(--text-light); }
+        .detail strong { color: var(--text-dark); }
+        .package-price { font-size: 24px; color: var(--primary-gold); font-weight: bold; margin: 15px 0; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            overflow: auto;
+        }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+        }
+        .modal-header h2 { color: var(--primary-gold); }
+        .close-btn {
+            background: none; border: none;
+            font-size: 28px; cursor: pointer;
+            color: var(--text-light);
+        }
+        .close-btn:hover { color: var(--text-dark); }
+
+        .form-group { margin: 18px 0; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-dark); }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .dashboard-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--primary-gold);
+        }
+        .dashboard-card h3 { color: var(--text-light); font-size: 14px; margin-bottom: 10px; }
+        .dashboard-card .metric { font-size: 34px; font-weight: bold; color: var(--primary-gold); }
+        .dashboard-card .change { font-size: 12px; color: var(--success-green); margin-top: 10px; }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--primary-dark); color: white; padding: 15px; text-align: left; font-weight: 600; white-space: nowrap; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        tr:hover { background: var(--primary-light); }
+
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-confirmed { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d1ecf1; color: #0c5460; }
+
+        .tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid var(--border); flex-wrap: wrap; }
+        .tab-button {
+            padding: 15px 20px;
+            background: none; border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .tab-button.active { color: var(--primary-gold); border-bottom-color: var(--primary-gold); }
+        .tab-button:hover { color: var(--text-dark); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-label { color: var(--text-light); font-size: 14px; margin-bottom: 10px; font-weight: 600; }
+        .stat-value { font-size: 30px; font-weight: bold; color: var(--primary-gold); }
+        .stat-item p { color: var(--text-light); font-size: 13px; margin-top: 5px; }
+
+        .alert { padding: 15px 20px; border-radius: 5px; margin: 20px 0; }
+        .alert-warning { background: #fff3cd; color: #856404; border-left: 4px solid #ffc107; }
+        [dir="rtl"] .alert-warning { border-left: none; border-right: 4px solid #ffc107; }
+
+        .search-box { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+        .search-box input { flex: 1; min-width: 200px; padding: 12px; border: 1px solid var(--border); border-radius: 5px; }
+        .search-box select { padding: 12px; border: 1px solid var(--border); border-radius: 5px; }
+
+        @media (max-width: 768px) {
+            .nav-menu { gap: 12px; font-size: 14px; }
+            .hero h1 { font-size: 32px; }
+            .packages-grid { grid-template-columns: 1fr; }
+            .modal-content { width: 95%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <span class="logo" onclick="showSection('home')">✈️ SyriaWay</span>
+            <nav class="nav-menu">
+                <a onclick="showSection('home')" class="active" data-i18n="nav_home">Home</a>
+                <a onclick="showSection('packages')" data-i18n="nav_packages">Packages</a>
+                <a onclick="showSection('about')" data-i18n="nav_about">About</a>
+                <a onclick="showSection('login')" data-i18n="nav_admin">Admin</a>
+                <button class="lang-toggle" onclick="toggleLanguage()" id="langBtn">العربية</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- HOME -->
+            <section id="home" class="section active">
+                <div class="hero">
+                    <h1 data-i18n="hero_title">Discover Syria with SyriaWay</h1>
+                    <p class="tagline" data-i18n="hero_tagline">Your Trust Concierge for Travel to Syria</p>
+                    <p data-i18n="hero_sub">For tourists, families, and diaspora — flights, visas, hotels, transport & local guides, all in one place</p>
+                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="showSection('packages')" data-i18n="hero_cta">Explore Packages</button>
+                </div>
+
+                <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-dark);" data-i18n="services_title">Everything You Need</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">✈️ <span data-i18n="svc_flights">Flights</span></div>
+                        <p data-i18n="svc_flights_desc">Direct booking worldwide</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">📋 <span data-i18n="svc_visa">Visa Support</span></div>
+                        <p data-i18n="svc_visa_desc">Expert visa facilitation</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">🏨 <span data-i18n="svc_hotels">Accommodation</span></div>
+                        <p data-i18n="svc_hotels_desc">Vetted hotels & homes</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">🚗 <span data-i18n="svc_transport">Transport</span></div>
+                        <p data-i18n="svc_transport_desc">Pickup & domestic transit</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">🗺️ <span data-i18n="svc_guides">Local Guides</span></div>
+                        <p data-i18n="svc_guides_desc">Licensed expert guides</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">💬 <span data-i18n="svc_support">24/7 Support</span></div>
+                        <p data-i18n="svc_support_desc">Arabic & English concierge</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PACKAGES -->
+            <section id="packages" class="section">
+                <h2 style="margin: 30px 0; color: var(--primary-dark);" data-i18n="packages_title">Tourism Packages</h2>
+                <div class="search-box">
+                    <input type="text" id="searchInput" data-i18n-ph="search_ph" placeholder="Search packages..." onkeyup="filterPackages()">
+                    <select id="filterCategory" onchange="filterPackages()">
+                        <option value="" data-i18n="filter_all">All Categories</option>
+                        <option value="heritage" data-i18n="cat_heritage">Heritage & Culture</option>
+                        <option value="religious" data-i18n="cat_religious">Religious Tourism</option>
+                        <option value="coastal" data-i18n="cat_coastal">Coastal & Nature</option>
+                        <option value="family" data-i18n="cat_family">Family & Diaspora</option>
+                    </select>
+                </div>
+                <div class="packages-grid" id="packagesGrid"></div>
+            </section>
+
+            <!-- ABOUT -->
+            <section id="about" class="section">
+                <div class="hero" style="padding: 50px 20px;">
+                    <h1 data-i18n="about_title">About SyriaWay</h1>
+                    <p data-i18n="about_sub">The Trust Concierge for Travel to Syria</p>
+                </div>
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); line-height: 1.8;">
+                    <h3 style="color: var(--primary-gold); margin-bottom: 15px;" data-i18n="about_mission_title">Our Mission</h3>
+                    <p data-i18n="about_mission" style="margin-bottom: 25px;">SyriaWay makes travel to Syria simple, safe, and seamless. Whether you are an international tourist exploring ancient heritage, a pilgrim visiting sacred sites, or a member of the diaspora returning home, we handle every detail — flights, visas, accommodation, transport, and trusted local guides.</p>
+
+                    <h3 style="color: var(--primary-gold); margin-bottom: 15px;" data-i18n="about_why_title">Why SyriaWay?</h3>
+                    <ul data-i18n="about_why_list" style="margin-left: 20px; margin-bottom: 25px;">
+                        <li>One integrated booking — no juggling multiple vendors</li>
+                        <li>Bilingual support in Arabic and English, 24/7</li>
+                        <li>Vetted local partners and licensed guides</li>
+                        <li>Transparent pricing with no hidden fees</li>
+                        <li>Payment handling that actually works for Syria</li>
+                    </ul>
+
+                    <h3 style="color: var(--primary-gold); margin-bottom: 15px;" data-i18n="about_market_title">Who We Serve</h3>
+                    <div class="stats-grid" style="margin-top: 15px;">
+                        <div class="stat-item">
+                            <div class="stat-value">🌍</div>
+                            <div class="stat-label" data-i18n="market_intl">International Tourists</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">🕌</div>
+                            <div class="stat-label" data-i18n="market_religious">Pilgrims & Faith Travel</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">🏠</div>
+                            <div class="stat-label" data-i18n="market_diaspora">Returning Diaspora</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">💼</div>
+                            <div class="stat-label" data-i18n="market_business">Business Travelers</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BOOKING MODAL -->
+            <div id="bookingModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="bookingTitle" data-i18n="book_title">Book Package</h2>
+                        <button class="close-btn" onclick="closeModal('bookingModal')">&times;</button>
+                    </div>
+                    <div id="bookingDetails"></div>
+                    <form id="bookingForm" onsubmit="submitBooking(event)">
+                        <h3 style="color: var(--primary-gold); margin-top: 20px;" data-i18n="book_passenger">Traveler Information</h3>
+                        <div class="form-group">
+                            <label data-i18n="book_name">Full Name *</label>
+                            <input type="text" id="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="book_email">Email Address *</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="book_phone">Phone Number *</label>
+                            <input type="tel" id="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="book_country">Country of Residence *</label>
+                            <input type="text" id="country" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="book_travelers">Number of Travelers *</label>
+                            <input type="number" id="travelers" min="1" max="20" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="book_departure">Departure Date *</label>
+                            <input type="date" id="departureDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="book_return">Return Date *</label>
+                            <input type="date" id="returnDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="book_requests">Special Requests</label>
+                            <textarea id="specialRequests" rows="3" data-i18n-ph="book_requests_ph" placeholder="Any special needs or preferences?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="agreeTerms" required style="width: auto;">
+                                <span data-i18n="book_terms">I agree to SyriaWay's terms and conditions</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" data-i18n="book_confirm">Confirm Booking</button>
+                        <button type="button" class="btn btn-secondary btn-block" style="margin-top: 10px;" onclick="closeModal('bookingModal')" data-i18n="book_cancel">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- CONFIRMATION MODAL -->
+            <div id="confirmationModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 data-i18n="confirm_title">Booking Confirmed! ✓</h2>
+                        <button class="close-btn" onclick="closeModal('confirmationModal')">&times;</button>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 60px; margin: 20px 0;">🎉</div>
+                        <h3 style="color: var(--success-green); margin: 20px 0;" data-i18n="confirm_heading">Your booking has been confirmed!</h3>
+                        <p style="color: var(--text-light); margin: 15px 0;"><span data-i18n="confirm_id">Booking ID:</span> <strong style="color: var(--primary-gold);" id="bookingId">#SYW-2026-0001</strong></p>
+                        <p style="color: var(--text-light); margin: 15px 0;" data-i18n="confirm_msg">A concierge specialist will contact you within 24 hours to finalize details.</p>
+                        <button class="btn btn-primary" onclick="closeModal('confirmationModal'); showSection('home')" data-i18n="confirm_back">Back to Home</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN LOGIN -->
+            <section id="login" class="section">
+                <div style="max-width: 500px; margin: 60px auto;">
+                    <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h2 style="text-align: center; color: var(--primary-gold); margin-bottom: 25px;" data-i18n="login_title">Admin Dashboard Login</h2>
+                        <div class="alert alert-warning">
+                            <strong data-i18n="login_demo">Demo Mode:</strong> <span data-i18n="login_demo_msg">Enter any email to access the dashboard</span>
+                        </div>
+                        <form onsubmit="adminLogin(event)">
+                            <div class="form-group">
+                                <label data-i18n="login_email">Admin Email</label>
+                                <input type="email" id="adminEmail" placeholder="you@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label data-i18n="login_password">Password</label>
+                                <input type="password" id="adminPassword" placeholder="••••••••" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block" data-i18n="login_signin">Sign In</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ADMIN DASHBOARD -->
+            <section id="dashboard" class="section">
+                <h2 style="margin: 30px 0; color: var(--primary-dark);" data-i18n="dash_title">Admin Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3 data-i18n="dash_bookings">Total Bookings</h3>
+                        <div class="metric">342</div>
+                        <div class="change">↑ 21% <span data-i18n="dash_vs">from last month</span></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 data-i18n="dash_revenue">Revenue (Month)</h3>
+                        <div class="metric">€124K</div>
+                        <div class="change">↑ 27% <span data-i18n="dash_vs">from last month</span></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 data-i18n="dash_customers">Active Customers</h3>
+                        <div class="metric">718</div>
+                        <div class="change">↑ 14% <span data-i18n="dash_vs">from last month</span></div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3 data-i18n="dash_pending">Pending Confirmations</h3>
+                        <div class="metric">38</div>
+                        <div class="change" data-i18n="dash_attention">Requires attention</div>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab(event, 'bookings-tab')" data-i18n="tab_bookings">Recent Bookings</button>
+                    <button class="tab-button" onclick="switchTab(event, 'customers-tab')" data-i18n="tab_customers">Customers</button>
+                    <button class="tab-button" onclick="switchTab(event, 'analytics-tab')" data-i18n="tab_analytics">Analytics</button>
+                    <button class="tab-button" onclick="switchTab(event, 'settings-tab')" data-i18n="tab_settings">Settings</button>
+                </div>
+
+                <div id="bookings-tab" class="tab-content active">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="th_id">Booking ID</th>
+                                    <th data-i18n="th_customer">Customer</th>
+                                    <th data-i18n="th_package">Package</th>
+                                    <th data-i18n="th_origin">Origin</th>
+                                    <th data-i18n="th_date">Date</th>
+                                    <th data-i18n="th_amount">Amount</th>
+                                    <th data-i18n="th_status">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="customers-tab" class="tab-content">
+                    <button class="btn btn-primary" style="margin: 20px 0;" data-i18n="btn_add_customer">+ Add New Customer</button>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="th_name">Name</th>
+                                    <th data-i18n="th_email">Email</th>
+                                    <th data-i18n="th_origin">Origin</th>
+                                    <th data-i18n="th_num_bookings">Bookings</th>
+                                    <th data-i18n="th_spent">Total Spent</th>
+                                    <th data-i18n="th_segment">Segment</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="analytics-tab" class="tab-content">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label" data-i18n="an_avg">Avg Booking Value</div>
+                            <div class="stat-value">€1,985</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label" data-i18n="an_repeat">Repeat Rate</div>
+                            <div class="stat-value">38%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label" data-i18n="an_confirm">Avg Days to Confirm</div>
+                            <div class="stat-value">2.1</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label" data-i18n="an_satisfaction">Satisfaction</div>
+                            <div class="stat-value">4.8/5</div>
+                        </div>
+                    </div>
+                    <h3 style="margin: 30px 0 15px; color: var(--primary-dark);" data-i18n="an_revenue_trend">Monthly Revenue Trend</h3>
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); height: 280px; display: flex; align-items: flex-end; gap: 12px;">
+                        <div style="flex: 1; background: var(--primary-gold); height: 50%; border-radius: 5px;" title="Mar: €78K"></div>
+                        <div style="flex: 1; background: var(--primary-gold); height: 62%; border-radius: 5px;" title="Apr: €92K"></div>
+                        <div style="flex: 1; background: var(--primary-gold); height: 70%; border-radius: 5px;" title="May: €104K"></div>
+                        <div style="flex: 1; background: var(--primary-gold); height: 84%; border-radius: 5px;" title="Jun: €124K"></div>
+                        <div style="flex: 1; background: var(--accent-blue); height: 90%; border-radius: 5px; opacity: 0.5;" title="Jul (proj): €135K"></div>
+                        <div style="flex: 1; background: var(--accent-blue); height: 100%; border-radius: 5px; opacity: 0.5;" title="Aug (proj): €150K"></div>
+                    </div>
+                    <h3 style="margin: 30px 0 15px; color: var(--primary-dark);" data-i18n="an_segments">Customer Segments</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item"><div class="stat-value">42%</div><div class="stat-label" data-i18n="market_diaspora">Returning Diaspora</div></div>
+                        <div class="stat-item"><div class="stat-value">28%</div><div class="stat-label" data-i18n="market_intl">International Tourists</div></div>
+                        <div class="stat-item"><div class="stat-value">18%</div><div class="stat-label" data-i18n="market_religious">Pilgrims & Faith</div></div>
+                        <div class="stat-item"><div class="stat-value">12%</div><div class="stat-label" data-i18n="market_business">Business</div></div>
+                    </div>
+                </div>
+
+                <div id="settings-tab" class="tab-content">
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <div class="form-group">
+                            <label data-i18n="set_company">Company Name</label>
+                            <input type="text" value="SyriaWay Travel Ltd" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="set_email">Support Email</label>
+                            <input type="email" value="support@syriaway.com">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="set_currency">Default Currency</label>
+                            <select>
+                                <option>EUR (€)</option>
+                                <option>USD ($)</option>
+                                <option>GBP (£)</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" data-i18n="set_save">Save Settings</button>
+                        <button class="btn btn-secondary" onclick="adminLogout()" data-i18n="set_logout">Logout</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // ============ TRANSLATIONS ============
+        const i18n = {
+            en: {
+                nav_home: "Home", nav_packages: "Packages", nav_about: "About", nav_admin: "Admin",
+                hero_title: "Discover Syria with SyriaWay",
+                hero_tagline: "Your Trust Concierge for Travel to Syria",
+                hero_sub: "For tourists, families, and diaspora — flights, visas, hotels, transport & local guides, all in one place",
+                hero_cta: "Explore Packages",
+                services_title: "Everything You Need",
+                svc_flights: "Flights", svc_flights_desc: "Direct booking worldwide",
+                svc_visa: "Visa Support", svc_visa_desc: "Expert visa facilitation",
+                svc_hotels: "Accommodation", svc_hotels_desc: "Vetted hotels & homes",
+                svc_transport: "Transport", svc_transport_desc: "Pickup & domestic transit",
+                svc_guides: "Local Guides", svc_guides_desc: "Licensed expert guides",
+                svc_support: "24/7 Support", svc_support_desc: "Arabic & English concierge",
+                packages_title: "Tourism Packages",
+                search_ph: "Search packages...",
+                filter_all: "All Categories", cat_heritage: "Heritage & Culture", cat_religious: "Religious Tourism",
+                cat_coastal: "Coastal & Nature", cat_family: "Family & Diaspora",
+                about_title: "About SyriaWay", about_sub: "The Trust Concierge for Travel to Syria",
+                about_mission_title: "Our Mission",
+                about_mission: "SyriaWay makes travel to Syria simple, safe, and seamless. Whether you are an international tourist exploring ancient heritage, a pilgrim visiting sacred sites, or a member of the diaspora returning home, we handle every detail — flights, visas, accommodation, transport, and trusted local guides.",
+                about_why_title: "Why SyriaWay?",
+                about_market_title: "Who We Serve",
+                market_intl: "International Tourists", market_religious: "Pilgrims & Faith Travel",
+                market_diaspora: "Returning Diaspora", market_business: "Business Travelers",
+                book_title: "Book Package", book_passenger: "Traveler Information",
+                book_name: "Full Name *", book_email: "Email Address *", book_phone: "Phone Number *",
+                book_country: "Country of Residence *", book_travelers: "Number of Travelers *",
+                book_departure: "Departure Date *", book_return: "Return Date *",
+                book_requests: "Special Requests", book_requests_ph: "Any special needs or preferences?",
+                book_terms: "I agree to SyriaWay's terms and conditions",
+                book_confirm: "Confirm Booking", book_cancel: "Cancel",
+                confirm_title: "Booking Confirmed! ✓", confirm_heading: "Your booking has been confirmed!",
+                confirm_id: "Booking ID:", confirm_msg: "A concierge specialist will contact you within 24 hours to finalize details.",
+                confirm_back: "Back to Home",
+                login_title: "Admin Dashboard Login", login_demo: "Demo Mode:",
+                login_demo_msg: "Enter any email to access the dashboard",
+                login_email: "Admin Email", login_password: "Password", login_signin: "Sign In",
+                dash_title: "Admin Dashboard", dash_bookings: "Total Bookings", dash_revenue: "Revenue (Month)",
+                dash_customers: "Active Customers", dash_pending: "Pending Confirmations",
+                dash_vs: "from last month", dash_attention: "Requires attention",
+                tab_bookings: "Recent Bookings", tab_customers: "Customers", tab_analytics: "Analytics", tab_settings: "Settings",
+                th_id: "Booking ID", th_customer: "Customer", th_package: "Package", th_origin: "Origin",
+                th_date: "Date", th_amount: "Amount", th_status: "Status",
+                th_name: "Name", th_email: "Email", th_num_bookings: "Bookings", th_spent: "Total Spent", th_segment: "Segment",
+                btn_add_customer: "+ Add New Customer",
+                an_avg: "Avg Booking Value", an_repeat: "Repeat Rate", an_confirm: "Avg Days to Confirm",
+                an_satisfaction: "Satisfaction", an_revenue_trend: "Monthly Revenue Trend", an_segments: "Customer Segments",
+                set_company: "Company Name", set_email: "Support Email", set_currency: "Default Currency",
+                set_save: "Save Settings", set_logout: "Logout",
+                status_confirmed: "Confirmed", status_pending: "Pending", status_completed: "Completed",
+                seg_diaspora: "Diaspora", seg_intl: "Tourist", seg_religious: "Pilgrim", seg_business: "Business"
+            },
+            ar: {
+                nav_home: "الرئيسية", nav_packages: "الباقات", nav_about: "من نحن", nav_admin: "الإدارة",
+                hero_title: "اكتشف سوريا مع SyriaWay",
+                hero_tagline: "مرافق الثقة لرحلتك إلى سوريا",
+                hero_sub: "للسياح والعائلات والمغتربين — طيران، تأشيرات، فنادق، نقل ومرشدين محليين في مكان واحد",
+                hero_cta: "استكشف الباقات",
+                services_title: "كل ما تحتاجه",
+                svc_flights: "الطيران", svc_flights_desc: "حجز مباشر من كل العالم",
+                svc_visa: "دعم التأشيرة", svc_visa_desc: "تسهيل التأشيرة باحتراف",
+                svc_hotels: "الإقامة", svc_hotels_desc: "فنادق وبيوت موثوقة",
+                svc_transport: "النقل", svc_transport_desc: "استقبال ونقل داخلي",
+                svc_guides: "مرشدون محليون", svc_guides_desc: "مرشدون مرخّصون خبراء",
+                svc_support: "دعم 24/7", svc_support_desc: "خدمة بالعربية والإنجليزية",
+                packages_title: "باقات السياحة",
+                search_ph: "ابحث عن باقة...",
+                filter_all: "كل الفئات", cat_heritage: "التراث والثقافة", cat_religious: "السياحة الدينية",
+                cat_coastal: "الساحل والطبيعة", cat_family: "العائلات والمغتربين",
+                about_title: "عن SyriaWay", about_sub: "مرافق الثقة للسفر إلى سوريا",
+                about_mission_title: "مهمتنا",
+                about_mission: "تجعل SyriaWay السفر إلى سوريا بسيطاً وآمناً وسلساً. سواء كنت سائحاً دولياً تستكشف التراث العريق، أو حاجاً يزور المواقع المقدسة، أو مغترباً عائداً إلى الوطن، نتولى كل التفاصيل — الطيران والتأشيرات والإقامة والنقل والمرشدين المحليين الموثوقين.",
+                about_why_title: "لماذا SyriaWay؟",
+                about_market_title: "من نخدم",
+                market_intl: "السياح الدوليون", market_religious: "الحجاج والسياحة الدينية",
+                market_diaspora: "المغتربون العائدون", market_business: "رجال الأعمال",
+                book_title: "احجز الباقة", book_passenger: "معلومات المسافر",
+                book_name: "الاسم الكامل *", book_email: "البريد الإلكتروني *", book_phone: "رقم الهاتف *",
+                book_country: "بلد الإقامة *", book_travelers: "عدد المسافرين *",
+                book_departure: "تاريخ المغادرة *", book_return: "تاريخ العودة *",
+                book_requests: "طلبات خاصة", book_requests_ph: "أي احتياجات أو تفضيلات خاصة؟",
+                book_terms: "أوافق على شروط وأحكام SyriaWay",
+                book_confirm: "تأكيد الحجز", book_cancel: "إلغاء",
+                confirm_title: "تم تأكيد الحجز! ✓", confirm_heading: "تم تأكيد حجزك بنجاح!",
+                confirm_id: "رقم الحجز:", confirm_msg: "سيتواصل معك أحد مختصي الخدمة خلال 24 ساعة لإتمام التفاصيل.",
+                confirm_back: "العودة للرئيسية",
+                login_title: "تسجيل دخول لوحة الإدارة", login_demo: "وضع تجريبي:",
+                login_demo_msg: "أدخل أي بريد إلكتروني للدخول إلى اللوحة",
+                login_email: "بريد المدير", login_password: "كلمة المرور", login_signin: "تسجيل الدخول",
+                dash_title: "لوحة الإدارة", dash_bookings: "إجمالي الحجوزات", dash_revenue: "الإيرادات (الشهر)",
+                dash_customers: "العملاء النشطون", dash_pending: "حجوزات قيد التأكيد",
+                dash_vs: "عن الشهر الماضي", dash_attention: "يتطلب انتباهاً",
+                tab_bookings: "أحدث الحجوزات", tab_customers: "العملاء", tab_analytics: "التحليلات", tab_settings: "الإعدادات",
+                th_id: "رقم الحجز", th_customer: "العميل", th_package: "الباقة", th_origin: "المصدر",
+                th_date: "التاريخ", th_amount: "المبلغ", th_status: "الحالة",
+                th_name: "الاسم", th_email: "البريد", th_num_bookings: "الحجوزات", th_spent: "إجمالي الإنفاق", th_segment: "الفئة",
+                btn_add_customer: "+ إضافة عميل جديد",
+                an_avg: "متوسط قيمة الحجز", an_repeat: "معدل التكرار", an_confirm: "متوسط أيام التأكيد",
+                an_satisfaction: "الرضا", an_revenue_trend: "اتجاه الإيرادات الشهرية", an_segments: "فئات العملاء",
+                set_company: "اسم الشركة", set_email: "بريد الدعم", set_currency: "العملة الافتراضية",
+                set_save: "حفظ الإعدادات", set_logout: "تسجيل الخروج",
+                status_confirmed: "مؤكد", status_pending: "قيد الانتظار", status_completed: "مكتمل",
+                seg_diaspora: "مغترب", seg_intl: "سائح", seg_religious: "حاج", seg_business: "أعمال"
+            }
+        };
+
+        let currentLang = 'en';
+
+        // ============ PACKAGE DATA ============
+        const packages = [
+            { id: 1, category: "heritage", price: 1890, capacity: 20,
+              en: { name: "Damascus Heritage Tour", destination: "Damascus", desc: "Explore the world's oldest capital — Umayyad Mosque, Old City bazaars, and Saladin's Citadel.", badge: "Heritage" },
+              ar: { name: "جولة دمشق التراثية", destination: "دمشق", desc: "اكتشف أقدم عاصمة في العالم — الجامع الأموي، أسواق المدينة القديمة، وقلعة دمشق.", badge: "تراث" },
+              emoji: "🕌", duration: 7 },
+            { id: 2, category: "heritage", price: 1650, capacity: 15,
+              en: { name: "Aleppo & the Citadel", destination: "Aleppo", desc: "Discover Aleppo's revived old souks, the great Citadel, and legendary cuisine.", badge: "Heritage" },
+              ar: { name: "حلب والقلعة", destination: "حلب", desc: "اكتشف أسواق حلب القديمة المُحياة، القلعة العظيمة، والمطبخ الأسطوري.", badge: "تراث" },
+              emoji: "🏛️", duration: 6 },
+            { id: 3, category: "religious", price: 1450, capacity: 30,
+              en: { name: "Sacred Sites Pilgrimage", destination: "Damascus & Maaloula", desc: "Visit the Sayyidah Zaynab Shrine, Maaloula's Aramaic monasteries, and Umayyad Mosque.", badge: "Religious" },
+              ar: { name: "رحلة المقامات المقدسة", destination: "دمشق ومعلولا", desc: "زيارة مقام السيدة زينب، أديرة معلولا الآرامية، والجامع الأموي.", badge: "ديني" },
+              emoji: "🕊️", duration: 8 },
+            { id: 4, category: "coastal", price: 1350, capacity: 25,
+              en: { name: "Mediterranean Coast Escape", destination: "Latakia & Tartus", desc: "Relax on Syria's coast — beaches, seafood, Arwad island, and coastal castles.", badge: "Coastal" },
+              ar: { name: "استراحة الساحل المتوسطي", destination: "اللاذقية وطرطوس", desc: "استرخِ على ساحل سوريا — شواطئ، مأكولات بحرية، جزيرة أرواد، وقلاع ساحلية.", badge: "ساحلي" },
+              emoji: "🏖️", duration: 5 },
+            { id: 5, category: "family", price: 2450, capacity: 30,
+              en: { name: "Family Reunion Package", destination: "Multi-City", desc: "For diaspora families — 2 weeks, accommodation, daily transport, and family meetup coordination.", badge: "Family" },
+              ar: { name: "باقة لمّ شمل العائلة", destination: "عدة مدن", desc: "للعائلات المغتربة — أسبوعان، إقامة، نقل يومي، وتنسيق لقاءات العائلة.", badge: "عائلي" },
+              emoji: "👨‍👩‍👧‍👦", duration: 14 },
+            { id: 6, category: "heritage", price: 3200, capacity: 18,
+              en: { name: "Grand Syria Tour", destination: "Damascus·Aleppo·Palmyra·Coast", desc: "The complete experience — ancient Palmyra, Krak des Chevaliers, and all major cities.", badge: "Premium" },
+              ar: { name: "جولة سوريا الكبرى", destination: "دمشق·حلب·تدمر·الساحل", desc: "التجربة الكاملة — تدمر الأثرية، قلعة الحصن، وجميع المدن الكبرى.", badge: "مميّز" },
+              emoji: "🗺️", duration: 14 }
+        ];
+
+        // ============ SAMPLE BOOKINGS ============
+        const sampleBookings = [
+            { id: "#SYW-2026-0342", customer: "Hans Müller", pkg_en: "Grand Syria Tour", pkg_ar: "جولة سوريا الكبرى", origin: "🇩🇪 Germany", date: "2026-06-16", amount: "€3,200", status: "confirmed" },
+            { id: "#SYW-2026-0341", customer: "Ahmed Al-Omar", pkg_en: "Family Reunion Package", pkg_ar: "باقة لمّ شمل العائلة", origin: "🇸🇪 Sweden", date: "2026-06-15", amount: "€2,450", status: "pending" },
+            { id: "#SYW-2026-0340", customer: "Sophie Laurent", pkg_en: "Damascus Heritage Tour", pkg_ar: "جولة دمشق التراثية", origin: "🇫🇷 France", date: "2026-06-15", amount: "€1,890", status: "confirmed" },
+            { id: "#SYW-2026-0339", customer: "Fatima Hassan", pkg_en: "Sacred Sites Pilgrimage", pkg_ar: "رحلة المقامات المقدسة", origin: "🇮🇶 Iraq", date: "2026-06-14", amount: "€1,450", status: "completed" },
+            { id: "#SYW-2026-0338", customer: "James Wilson", pkg_en: "Aleppo & the Citadel", pkg_ar: "حلب والقلعة", origin: "🇬🇧 UK", date: "2026-06-13", amount: "€1,650", status: "confirmed" },
+            { id: "#SYW-2026-0337", customer: "Layla Samir", pkg_en: "Mediterranean Coast Escape", pkg_ar: "استراحة الساحل المتوسطي", origin: "🇳🇱 Netherlands", date: "2026-06-12", amount: "€1,350", status: "pending" }
+        ];
+
+        const sampleCustomers = [
+            { name: "Hans Müller", email: "hans@email.de", origin: "🇩🇪 Germany", bookings: 2, spent: "€5,090", segment: "intl" },
+            { name: "Ahmed Al-Omar", email: "ahmed@email.se", origin: "🇸🇪 Sweden", bookings: 3, spent: "€6,340", segment: "diaspora" },
+            { name: "Sophie Laurent", email: "sophie@email.fr", origin: "🇫🇷 France", bookings: 1, spent: "€1,890", segment: "intl" },
+            { name: "Fatima Hassan", email: "fatima@email.iq", origin: "🇮🇶 Iraq", bookings: 2, spent: "€2,900", segment: "religious" },
+            { name: "James Wilson", email: "james@email.uk", origin: "🇬🇧 UK", bookings: 1, spent: "€1,650", segment: "business" }
+        ];
+
+        let currentPackage = null;
+        let bookingCounter = 342;
+
+        // ============ LANGUAGE ============
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const t = i18n[currentLang];
+            const html = document.getElementById('htmlRoot');
+            html.setAttribute('lang', currentLang);
+            html.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            document.getElementById('langBtn').textContent = currentLang === 'en' ? 'العربية' : 'English';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.textContent = t[key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (t[key]) el.setAttribute('placeholder', t[key]);
+            });
+            // About "why" list (special handling)
+            renderPackages(packages);
+            renderBookings();
+            renderCustomers();
+        }
+
+        // ============ NAVIGATION ============
+        function showSection(sectionId) {
+            if (sectionId === 'dashboard' && !isLoggedIn()) { sectionId = 'login'; }
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+            if (sectionId === 'packages') renderPackages(packages);
+            window.scrollTo(0, 0);
+        }
+
+        // ============ PACKAGES ============
+        function renderPackages(list) {
+            const grid = document.getElementById('packagesGrid');
+            if (!grid) return;
+            const t = i18n[currentLang];
+            grid.innerHTML = list.map(pkg => {
+                const p = pkg[currentLang];
+                return `
+                <div class="package-card">
+                    <div class="package-image">${pkg.emoji}</div>
+                    <div class="package-content">
+                        <span class="package-badge">${p.badge}</span>
+                        <h3>${p.name}</h3>
+                        <p style="color: var(--text-light); font-size: 13px; margin-bottom: 10px;">${p.desc}</p>
+                        <div class="package-details">
+                            <div class="detail"><strong>📍</strong> ${p.destination}</div>
+                            <div class="detail"><strong>📅</strong> ${pkg.duration} ${currentLang === 'ar' ? 'أيام' : 'days'}</div>
+                            <div class="detail"><strong>👥</strong> ${pkg.capacity}</div>
+                            <div class="detail"><strong>🌟</strong> 4.8/5</div>
+                        </div>
+                        <div class="package-price">€${pkg.price.toLocaleString()}</div>
+                        <button class="btn btn-primary btn-block" onclick="openBooking(${pkg.id})">${t.book_confirm.includes('احجز') || currentLang === 'ar' ? 'احجز الآن' : 'Book Now'}</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function filterPackages() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('filterCategory').value;
+            const filtered = packages.filter(pkg => {
+                const p = pkg[currentLang];
+                const matchesSearch = p.name.toLowerCase().includes(search) || p.destination.toLowerCase().includes(search);
+                const matchesCategory = !category || pkg.category === category;
+                return matchesSearch && matchesCategory;
+            });
+            renderPackages(filtered);
+        }
+
+        // ============ BOOKING ============
+        function openBooking(packageId) {
+            currentPackage = packages.find(p => p.id === packageId);
+            const p = currentPackage[currentLang];
+            const isAr = currentLang === 'ar';
+            document.getElementById('bookingTitle').textContent = (isAr ? 'احجز: ' : 'Book: ') + p.name;
+            document.getElementById('bookingDetails').innerHTML = `
+                <div style="background: var(--primary-light); padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <p><strong>${isAr ? 'الباقة:' : 'Package:'}</strong> ${p.name}</p>
+                    <p><strong>${isAr ? 'الوجهة:' : 'Destination:'}</strong> ${p.destination}</p>
+                    <p><strong>${isAr ? 'المدة:' : 'Duration:'}</strong> ${currentPackage.duration} ${isAr ? 'أيام' : 'days'}</p>
+                    <p style="font-size: 18px; color: var(--primary-gold); margin-top: 10px;"><strong>${isAr ? 'السعر:' : 'Total Price:'}</strong> €${currentPackage.price.toLocaleString()}</p>
+                </div>`;
+            openModal('bookingModal');
+        }
+
+        function submitBooking(event) {
+            event.preventDefault();
+            const bookingId = `#SYW-2026-${String(++bookingCounter).padStart(4, '0')}`;
+            document.getElementById('bookingId').textContent = bookingId;
+            closeModal('bookingModal');
+            openModal('confirmationModal');
+            document.getElementById('bookingForm').reset();
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        // ============ ADMIN ============
+        function adminLogin(event) {
+            event.preventDefault();
+            localStorage.setItem('swAdminLoggedIn', 'true');
+            showSection('dashboard');
+            renderBookings();
+            renderCustomers();
+        }
+        function isLoggedIn() { return localStorage.getItem('swAdminLoggedIn') === 'true'; }
+        function adminLogout() { localStorage.removeItem('swAdminLoggedIn'); showSection('home'); }
+
+        function renderBookings() {
+            const tbody = document.getElementById('bookingsTableBody');
+            if (!tbody) return;
+            const t = i18n[currentLang];
+            tbody.innerHTML = sampleBookings.map(b => `
+                <tr>
+                    <td>${b.id}</td>
+                    <td>${b.customer}</td>
+                    <td>${currentLang === 'ar' ? b.pkg_ar : b.pkg_en}</td>
+                    <td>${b.origin}</td>
+                    <td>${b.date}</td>
+                    <td>${b.amount}</td>
+                    <td><span class="status-badge status-${b.status}">${t['status_' + b.status]}</span></td>
+                </tr>`).join('');
+        }
+
+        function renderCustomers() {
+            const tbody = document.getElementById('customersTableBody');
+            if (!tbody) return;
+            const t = i18n[currentLang];
+            tbody.innerHTML = sampleCustomers.map(c => `
+                <tr>
+                    <td>${c.name}</td>
+                    <td>${c.email}</td>
+                    <td>${c.origin}</td>
+                    <td>${c.bookings}</td>
+                    <td>${c.spent}</td>
+                    <td>${t['seg_' + c.segment]}</td>
+                </tr>`).join('');
+        }
+
+        function switchTab(event, tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        window.onclick = function(event) {
+            ['bookingModal', 'confirmationModal'].forEach(id => {
+                if (event.target === document.getElementById(id)) closeModal(id);
+            });
+        }
+
+        // ============ INIT ============
+        applyLanguage();
+        renderPackages(packages);
+    </script>
+</body>
+</html>
