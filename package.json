@@ -1,0 +1,20 @@
+{
+  "name": "alexaura-website1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://local_proxy@127.0.0.1:37801/git/7m4d5phdbd-eng/alexaura-website1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "marked": "^12.0.2",
+    "playwright": "^1.56.1"
+  }
+}
