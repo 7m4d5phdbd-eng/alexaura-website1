@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - eTravel Agency</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      padding: 20px 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid #444;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #d4af37;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+    }
+
+    .sidebar-nav li {
+      margin: 0;
+    }
+
+    .sidebar-nav a {
+      display: block;
+      padding: 12px 20px;
+      color: #ccc;
+      text-decoration: none;
+      transition: all 0.3s;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-nav a:hover {
+      color: #d4af37;
+      background: rgba(212, 175, 55, 0.1);
+      border-left-color: #d4af37;
+    }
+
+    .sidebar-nav a.active {
+      color: #d4af37;
+      background: rgba(212, 175, 55, 0.1);
+      border-left-color: #d4af37;
+    }
+
+    .logout-btn {
+      display: block;
+      padding: 12px 20px;
+      color: #ff6b6b;
+      text-decoration: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      transition: all 0.3s;
+      margin-top: 20px;
+      border-top: 1px solid #444;
+      font-size: 14px;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 107, 107, 0.1);
+      color: #ff8080;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    .top-bar {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .top-bar h1 {
+      font-size: 28px;
+      color: #1a1a1a;
+    }
+
+    .user-info {
+      text-align: right;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #e0e0e0;
+      background: white;
+      padding: 0 20px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .tab-button {
+      padding: 15px 20px;
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tab-button:hover {
+      color: #333;
+    }
+
+    .tab-button.active {
+      color: #d4af37;
+      border-bottom-color: #d4af37;
+    }
+
+    /* Tab Content */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-top: 3px solid #d4af37;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .stat-change {
+      font-size: 12px;
+      color: #66bb6a;
+      margin-top: 8px;
+    }
+
+    /* Table */
+    .table-section {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 20px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-header h2 {
+      font-size: 18px;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      padding: 10px 15px;
+      background: #d4af37;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: #c49d2e;
+    }
+
+    .btn-secondary {
+      padding: 8px 12px;
+      background: #e0e0e0;
+      color: #333;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+
+    .btn-danger {
+      padding: 8px 12px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s;
+    }
+
+    .btn-danger:hover {
+      background: #ff5252;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead {
+      background: #f9f9f9;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    th {
+      padding: 12px 20px;
+      text-align: left;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 12px;
+    }
+
+    td {
+      padding: 15px 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    tr:hover {
+      background: #f9f9f9;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-pending {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .status-confirmed {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+
+    .status-completed {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .status-cancelled {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .status-active {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+
+    .status-inactive {
+      background: #f5f5f5;
+      color: #999;
+    }
+
+    .status-paid {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+
+    .status-unpaid {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    /* Forms */
+    .form-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .alert {
+      padding: 12px 20px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .alert.error {
+      background: #ffebee;
+      color: #c62828;
+      border-left: 4px solid #c62828;
+    }
+
+    .alert.success {
+      background: #e8f5e9;
+      color: #388e3c;
+      border-left: 4px solid #388e3c;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #d4af37;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      font-size: 16px;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 200px;
+      }
+
+      .main-content {
+        margin-left: 200px;
+        padding: 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">eTravel Agency</div>
+        <div class="sidebar-subtitle">Admin Dashboard</div>
+      </div>
+      <nav>
+        <ul class="sidebar-nav">
+          <li><a href="#overview" class="sidebar-link active" data-tab="overview">Dashboard</a></li>
+          <li><a href="#clients" class="sidebar-link" data-tab="clients">Clients</a></li>
+          <li><a href="#bookings" class="sidebar-link" data-tab="bookings">Bookings</a></li>
+          <li><a href="#packages" class="sidebar-link" data-tab="packages">Packages</a></li>
+          <li><a href="#payments" class="sidebar-link" data-tab="payments">Payments</a></li>
+          <li><a href="#analytics" class="sidebar-link" data-tab="analytics">Analytics</a></li>
+        </ul>
+      </nav>
+      <button class="logout-btn" onclick="handleLogout()">Logout</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <h1>Dashboard</h1>
+        <div class="user-info">
+          <div class="user-name" id="userName">Admin User</div>
+          <div class="user-role" id="userRole">Administrator</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-button active" data-tab="overview">Overview</button>
+        <button class="tab-button" data-tab="clients">Clients</button>
+        <button class="tab-button" data-tab="bookings">Bookings</button>
+        <button class="tab-button" data-tab="packages">Packages</button>
+        <button class="tab-button" data-tab="payments">Payments</button>
+        <button class="tab-button" data-tab="analytics">Analytics</button>
+      </div>
+
+      <!-- Overview Tab -->
+      <div id="overview" class="tab-content active">
+        <div id="statsAlert" class="alert"></div>
+
+        <div class="stats-grid" id="statsContainer">
+          <div class="loading">
+            <span class="spinner"></span>Loading dashboard...
+          </div>
+        </div>
+
+        <div class="table-section">
+          <div class="table-header">
+            <h2>Recent Bookings</h2>
+          </div>
+          <div id="recentBookingsContainer">
+            <div class="loading">
+              <span class="spinner"></span>Loading bookings...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clients Tab -->
+      <div id="clients" class="tab-content">
+        <div class="table-section">
+          <div class="table-header">
+            <h2>Client Management</h2>
+            <div class="table-actions">
+              <button class="btn-primary" onclick="openClientForm()">+ Add Client</button>
+            </div>
+          </div>
+          <div id="clientsContainer">
+            <div class="loading">
+              <span class="spinner"></span>Loading clients...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bookings Tab -->
+      <div id="bookings" class="tab-content">
+        <div class="table-section">
+          <div class="table-header">
+            <h2>Booking Management</h2>
+            <div class="table-actions">
+              <select id="bookingStatusFilter" onchange="filterBookings()" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <div id="bookingsContainer">
+            <div class="loading">
+              <span class="spinner"></span>Loading bookings...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Packages Tab -->
+      <div id="packages" class="tab-content">
+        <div class="table-section">
+          <div class="table-header">
+            <h2>Package Management</h2>
+            <div class="table-actions">
+              <button class="btn-primary" onclick="openPackageForm()">+ Add Package</button>
+            </div>
+          </div>
+          <div id="packagesContainer">
+            <div class="loading">
+              <span class="spinner"></span>Loading packages...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payments Tab -->
+      <div id="payments" class="tab-content">
+        <div class="table-section">
+          <div class="table-header">
+            <h2>Payment Tracking</h2>
+            <div class="table-actions">
+              <select id="paymentStatusFilter" onchange="filterPayments()" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Failed">Failed</option>
+              </select>
+            </div>
+          </div>
+          <div id="paymentsContainer">
+            <div class="loading">
+              <span class="spinner"></span>Loading payments...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics Tab -->
+      <div id="analytics" class="tab-content">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Bookings</div>
+            <div class="stat-value" id="analyticsTotal">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value" id="analyticsRevenue">$0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Average Booking Value</div>
+            <div class="stat-value" id="analyticsAverage">$0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Conversion Rate</div>
+            <div class="stat-value" id="analyticsConversion">0%</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+          <div class="form-section">
+            <h3>Bookings by Status</h3>
+            <div id="bookingStatusChart"></div>
+          </div>
+          <div class="form-section">
+            <h3>Top Destinations</h3>
+            <div id="destinationChart"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/airtable-api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/dashboard-admin.js"></script>
+  <script>
+    let allClients = [];
+    let allBookings = [];
+    let allPackages = [];
+    let allPayments = [];
+    let allDestinations = [];
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Check auth and populate user info
+      const user = authManager.getUser();
+      if (user) {
+        document.getElementById('userName').textContent = user.name;
+        document.getElementById('userRole').textContent = user.role;
+      }
+
+      // Load initial data
+      await loadDashboardData();
+
+      // Tab switching
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          switchTab(this.dataset.tab);
+        });
+      });
+
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.addEventListener('click', function() {
+          switchTab(this.dataset.tab);
+        });
+      });
+    });
+
+    function switchTab(tabName) {
+      // Hide all content
+      document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelectorAll('[data-tab]').forEach(link => {
+        link.classList.remove('active');
+      });
+
+      // Show selected tab
+      const tabEl = document.getElementById(tabName);
+      if (tabEl) {
+        tabEl.classList.add('active');
+      }
+
+      const btnEl = document.querySelector(`[data-tab="${tabName}"]`);
+      if (btnEl) {
+        btnEl.classList.add('active');
+      }
+
+      const tabBtn = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
+      if (tabBtn) {
+        tabBtn.classList.add('active');
+      }
+
+      // Load tab-specific data
+      if (tabName === 'clients') loadClients();
+      else if (tabName === 'bookings') loadBookings();
+      else if (tabName === 'packages') loadPackages();
+      else if (tabName === 'payments') loadPayments();
+      else if (tabName === 'analytics') loadAnalytics();
+    }
+
+    // ============ DASHBOARD OVERVIEW ============
+
+    async function loadDashboardData() {
+      try {
+        const stats = await dashboardManager.getDashboardStats();
+        if (!stats) return;
+
+        const statsHtml = `
+          <div class="stat-card">
+            <div class="stat-label">Total Bookings</div>
+            <div class="stat-value">${stats.totalBookings}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value">$${stats.totalRevenue.toFixed(2)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Clients</div>
+            <div class="stat-value">${stats.totalClients}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pending Payments</div>
+            <div class="stat-value">${stats.pendingPayments}</div>
+            <div class="stat-change">Conversion: ${stats.conversionRate}%</div>
+          </div>
+        `;
+
+        document.getElementById('statsContainer').innerHTML = statsHtml;
+
+        // Load recent bookings
+        allBookings = await dashboardManager.getBookings({ maxRecords: 5 });
+        displayRecentBookings(allBookings);
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+      }
+    }
+
+    function displayRecentBookings(bookings) {
+      if (bookings.length === 0) {
+        document.getElementById('recentBookingsContainer').innerHTML =
+          '<div class="no-data">No bookings found</div>';
+        return;
+      }
+
+      const rows = bookings.map(b => `
+        <tr>
+          <td>${b.fields['Booking ID'] || '-'}</td>
+          <td>${b.fields['Client Name'] || '-'}</td>
+          <td>${b.fields.Destination || '-'}</td>
+          <td><span class="status-badge status-${b.fields.Status.toLowerCase()}">${b.fields.Status}</span></td>
+          <td>$${(b.fields['Total Cost'] || 0).toFixed(2)}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('recentBookingsContainer').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Client</th>
+              <th>Destination</th>
+              <th>Status</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // ============ CLIENTS ============
+
+    async function loadClients() {
+      try {
+        allClients = await dashboardManager.getClients();
+        displayClients(allClients);
+      } catch (error) {
+        console.error('Error loading clients:', error);
+      }
+    }
+
+    function displayClients(clients) {
+      if (clients.length === 0) {
+        document.getElementById('clientsContainer').innerHTML =
+          '<div class="no-data">No clients found</div>';
+        return;
+      }
+
+      const rows = clients.map(c => `
+        <tr>
+          <td>${c.fields.Name || '-'}</td>
+          <td>${c.fields.Email || '-'}</td>
+          <td>${c.fields.Phone || '-'}</td>
+          <td>${c.fields.Country || '-'}</td>
+          <td><span class="status-badge status-${c.fields['Client Status'].toLowerCase()}">${c.fields['Client Status']}</span></td>
+          <td>
+            <button class="btn-secondary" onclick="editClient('${c.id}')">Edit</button>
+            <button class="btn-danger" onclick="deleteClient('${c.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('clientsContainer').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Country</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function deleteClient(clientId) {
+      if (!confirm('Are you sure you want to delete this client?')) return;
+      try {
+        await dashboardManager.deleteClient(clientId);
+        loadClients();
+      } catch (error) {
+        console.error('Error deleting client:', error);
+      }
+    }
+
+    function openClientForm() {
+      alert('Client form modal would appear here');
+    }
+
+    function editClient(clientId) {
+      alert('Edit form would appear here for: ' + clientId);
+    }
+
+    // ============ BOOKINGS ============
+
+    async function loadBookings() {
+      try {
+        allBookings = await dashboardManager.getBookings();
+        displayBookings(allBookings);
+      } catch (error) {
+        console.error('Error loading bookings:', error);
+      }
+    }
+
+    function displayBookings(bookings) {
+      if (bookings.length === 0) {
+        document.getElementById('bookingsContainer').innerHTML =
+          '<div class="no-data">No bookings found</div>';
+        return;
+      }
+
+      const rows = bookings.map(b => `
+        <tr>
+          <td>${b.fields['Booking ID'] || '-'}</td>
+          <td>${b.fields['Client Name'] || '-'}</td>
+          <td>${b.fields.Destination || '-'}</td>
+          <td>${b.fields['Departure Date'] || '-'}</td>
+          <td><span class="status-badge status-${b.fields.Status.toLowerCase()}">${b.fields.Status}</span></td>
+          <td>$${(b.fields['Total Cost'] || 0).toFixed(2)}</td>
+          <td>
+            <button class="btn-secondary" onclick="updateBookingStatus('${b.id}')">Update</button>
+            <button class="btn-danger" onclick="deleteBooking('${b.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('bookingsContainer').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Client</th>
+              <th>Destination</th>
+              <th>Departure</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function filterBookings() {
+      const status = document.getElementById('bookingStatusFilter').value;
+      const filtered = status ? allBookings.filter(b => b.fields.Status === status) : allBookings;
+      displayBookings(filtered);
+    }
+
+    async function deleteBooking(bookingId) {
+      if (!confirm('Are you sure you want to delete this booking?')) return;
+      try {
+        await dashboardManager.deleteBooking(bookingId);
+        loadBookings();
+      } catch (error) {
+        console.error('Error deleting booking:', error);
+      }
+    }
+
+    async function updateBookingStatus(bookingId) {
+      alert('Status update form would appear here for: ' + bookingId);
+    }
+
+    // ============ PACKAGES ============
+
+    async function loadPackages() {
+      try {
+        allPackages = await dashboardManager.getPackages();
+        displayPackages(allPackages);
+      } catch (error) {
+        console.error('Error loading packages:', error);
+      }
+    }
+
+    function displayPackages(packages) {
+      if (packages.length === 0) {
+        document.getElementById('packagesContainer').innerHTML =
+          '<div class="no-data">No packages found</div>';
+        return;
+      }
+
+      const rows = packages.map(p => `
+        <tr>
+          <td>${p.fields.Name || '-'}</td>
+          <td>${p.fields['Destination Name'] || '-'}</td>
+          <td>${p.fields['Duration (Days)'] || '-'} days</td>
+          <td>$${(p.fields['Price per Person'] || 0).toFixed(2)}</td>
+          <td>${p.fields['Current Bookings'] || 0}/${p.fields['Max Capacity'] || 0}</td>
+          <td><span class="status-badge status-${p.fields.Status.toLowerCase()}">${p.fields.Status}</span></td>
+          <td>
+            <button class="btn-secondary" onclick="editPackage('${p.id}')">Edit</button>
+            <button class="btn-danger" onclick="deletePackage('${p.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('packagesContainer').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Destination</th>
+              <th>Duration</th>
+              <th>Price</th>
+              <th>Bookings</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function openPackageForm() {
+      alert('Package form modal would appear here');
+    }
+
+    function editPackage(packageId) {
+      alert('Edit form would appear here for: ' + packageId);
+    }
+
+    async function deletePackage(packageId) {
+      if (!confirm('Are you sure you want to delete this package?')) return;
+      try {
+        await dashboardManager.deletePackage(packageId);
+        loadPackages();
+      } catch (error) {
+        console.error('Error deleting package:', error);
+      }
+    }
+
+    // ============ PAYMENTS ============
+
+    async function loadPayments() {
+      try {
+        allPayments = await dashboardManager.getPayments();
+        displayPayments(allPayments);
+      } catch (error) {
+        console.error('Error loading payments:', error);
+      }
+    }
+
+    function displayPayments(payments) {
+      if (payments.length === 0) {
+        document.getElementById('paymentsContainer').innerHTML =
+          '<div class="no-data">No payments found</div>';
+        return;
+      }
+
+      const rows = payments.map(p => `
+        <tr>
+          <td>${p.fields['Payment ID'] || '-'}</td>
+          <td>${p.fields['Booking ID'] || '-'}</td>
+          <td>${p.fields['Client Name'] || '-'}</td>
+          <td>$${(p.fields.Amount || 0).toFixed(2)}</td>
+          <td>${p.fields['Payment Method'] || '-'}</td>
+          <td><span class="status-badge status-${p.fields.Status.toLowerCase()}">${p.fields.Status}</span></td>
+          <td>
+            <button class="btn-secondary" onclick="markPaid('${p.id}')">Mark Paid</button>
+            <button class="btn-danger" onclick="deletePayment('${p.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('paymentsContainer').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Payment ID</th>
+              <th>Booking</th>
+              <th>Client</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function filterPayments() {
+      const status = document.getElementById('paymentStatusFilter').value;
+      const filtered = status ? allPayments.filter(p => p.fields.Status === status) : allPayments;
+      displayPayments(filtered);
+    }
+
+    async function markPaid(paymentId) {
+      try {
+        await dashboardManager.updatePayment(paymentId, { Status: 'Completed' });
+        loadPayments();
+      } catch (error) {
+        console.error('Error updating payment:', error);
+      }
+    }
+
+    async function deletePayment(paymentId) {
+      if (!confirm('Are you sure you want to delete this payment?')) return;
+      try {
+        await dashboardManager.deletePayment(paymentId);
+        loadPayments();
+      } catch (error) {
+        console.error('Error deleting payment:', error);
+      }
+    }
+
+    // ============ ANALYTICS ============
+
+    async function loadAnalytics() {
+      try {
+        const stats = await dashboardManager.getDashboardStats();
+        if (stats) {
+          document.getElementById('analyticsTotal').textContent = stats.totalBookings;
+          document.getElementById('analyticsRevenue').textContent = '$' + stats.totalRevenue.toFixed(2);
+          document.getElementById('analyticsAverage').textContent = '$' + (stats.totalRevenue / (stats.totalBookings || 1)).toFixed(2);
+          document.getElementById('analyticsConversion').textContent = stats.conversionRate + '%';
+        }
+
+        // Booking status chart
+        const statusData = await dashboardManager.getBookingsByStatus();
+        if (statusData) {
+          const statusHtml = Object.entries(statusData)
+            .map(([status, count]) => `<div style="margin-bottom: 10px;"><strong>${status}:</strong> ${count}</div>`)
+            .join('');
+          document.getElementById('bookingStatusChart').innerHTML = statusHtml;
+        }
+
+        // Revenue by destination
+        const revenueData = await dashboardManager.getRevenueByDestination();
+        if (revenueData) {
+          const topDests = Object.entries(revenueData)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([dest, revenue]) => `<div style="margin-bottom: 10px;"><strong>${dest}:</strong> $${revenue.toFixed(2)}</div>`)
+            .join('');
+          document.getElementById('destinationChart').innerHTML = topDests;
+        }
+      } catch (error) {
+        console.error('Error loading analytics:', error);
+      }
+    }
+
+    // ============ LOGOUT ============
+
+    function handleLogout() {
+      if (confirm('Are you sure you want to logout?')) {
+        authManager.logout();
+        window.location.href = '/pages/admin-login.html';
+      }
+    }
+  </script>
+</body>
+</html>
