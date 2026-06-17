@@ -6,6 +6,8 @@ const path = require('path');
 // Files to convert: [sourceMarkdown, outputPdf, title]
 const jobs = [
   ['SYRIAWAY_BUSINESS_CASE.md', 'pdf/SyriaWay_Business_Case.pdf', 'SyriaWay — Business Case & Feasibility Study'],
+  ['SYRIAWAY_COMPETITIVE_FINANCIAL_STUDY.md', 'pdf/SyriaWay_Competitive_Financial_Study.pdf', 'SyriaWay — Competitive Pricing & Financial Study'],
+  ['SYRIAWAY_SUPPLIER_PARTNERSHIPS_REPORT.md', 'pdf/SyriaWay_Supplier_Partnerships_Report.pdf', 'SyriaWay — Supplier & Partnership Research Study'],
   ['BEGINNER_GUIDE.md', 'pdf/SyriaWay_Beginner_Guide.pdf', 'Beginner Setup Guide'],
   ['QUICK_CHECKLIST.md', 'pdf/SyriaWay_Quick_Checklist.pdf', 'Quick Setup Checklist'],
 ];
