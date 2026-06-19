@@ -87,7 +87,28 @@
 
 ---
 
-## 4. ربط Softr.io بـ Airtable
+## 3.5 الـ MVP داخل Airtable (Interface جاهز ومنشور ✅)
+
+تم بناء واجهة كاملة داخل Airtable نفسه كـ MVP سريع قبل الانتقال لـ Softr.io.
+
+- **اسم الـ Interface:** PFMS — لوحة الإدارة
+- **Interface ID:** `pbdeIbcj1aeDwAvMb`
+- **الرابط:** https://airtable.com/appPkAZ0LWnLp9eZi/pbdeIbcj1aeDwAvMb
+
+### الصفحات الـ5 (منشورة)
+| # | الصفحة | النوع | المحتوى |
+|---|--------|-------|---------|
+| 1 | 📊 Dashboard | Dashboard | 4 أرقام (عدد المشاريع، الميزانية، المصروف، متوسط الإنجاز) + Donut (المشاريع حسب الحالة) + Bar (الميزانية حسب المشروع) |
+| 2 | 📁 المشاريع | Grid | كل المشاريع + فلاتر (Status / Priority) + الحقول المحسوبة |
+| 3 | ✅ المهام | Kanban | أعمدة حسب Status (To Do→Done) + سحب وإفلات + فلاتر (Assignee / Priority) |
+| 4 | 💰 الميزانية | Dashboard | المخصص + المصروف + Donut (حسب الفئة) + Bar (حسب الحالة) |
+| 5 | 🗂️ مكتبة الملفات | Grid | كل الملفات + فلاتر (File Type / Folder) |
+
+> **كيف تستخدمه:** افتح الرابط أعلاه → التنقّل بين الصفحات من القائمة الجانبية. لمشاركته: زر **Share** أعلى يمين الـ Interface → أضف اليسار كـ collaborator (يشوف نفس الصفحات).
+
+---
+
+## 4. ربط Softr.io بـ Airtable (التوسّع لاحقاً)
 
 1. سجّل دخول على [softr.io](https://www.softr.io) → أنشئ app جديد باسم "Alex Aura — PFMS"
 2. **Data Sources → Add → Airtable → Connect** → فوّض Softr
