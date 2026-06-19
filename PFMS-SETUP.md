@@ -37,21 +37,31 @@
 
 ---
 
-## 2. خطوات يدوية مطلوبة في Airtable (5 دقائق) ⚠️
+## 2. الحقول المحسوبة (rollup/lookup/formula) — جاهزة ومُتحقَّق منها ✅
 
-حقول الـ **rollup/lookup/formula عبر الجداول** ما بتقدر تتعمل عبر الـ API — أضفها يدوياً:
+كل الحقول المحسوبة أُنشئت وجرى التحقق منها بمشروع اختبار حقيقي (TEST — تم حذفه بعد التحقق):
 
-| الجدول | الحقل المطلوب | النوع | الإعداد |
-|--------|----------------|-------|---------|
-| Time Tracking | Hourly Rate | Lookup | من Team Member → Hourly Rate |
-| Time Tracking | Cost | Formula | `{Hours Worked} * {Hourly Rate}` |
-| Projects | Spent | Rollup | من Budget (Amount Spent) → SUM |
-| Projects | Progress % | Rollup | من Tasks (Completion %) → AVERAGE |
-| Projects | Task Count | Rollup | من Tasks → COUNTA |
-| Tasks | Time Logged | Rollup | من Time Tracking (Hours Worked) → SUM |
-| Team Members | Active Tasks | Rollup | من Tasks (Assignee) → COUNTA |
+| الجدول | الحقل | النوع | الإعداد | الحالة |
+|--------|-------|-------|---------|:---:|
+| Time Tracking | Hourly Rate | Lookup | من Team Member → Hourly Rate | ✅ |
+| Time Tracking | Cost | Formula | `{Hours Worked} * VALUE(ARRAYJOIN({Hourly Rate}&""))` | ✅ |
+| Projects | spent | Rollup | من Budget (Amount Spent) → SUM | ✅ |
+| Projects | progress % | Rollup | من Tasks (Completion %) → AVERAGE | ✅ |
+| Projects | Task Count | Rollup | من Tasks → COUNTA | ✅ |
+| Projects | Remaining Budget | Formula | `{Budget} - {spent}` | ✅ |
+| Tasks | Time Logged | Rollup | من Time Tracking (Hours Worked) → SUM | ✅ |
 
-> كل حقل: افتح الجدول → "+" لإضافة حقل → اختر النوع → حدد الجدول المرتبط والحقل والدالة.
+### نتائج التحقق (مشروع TEST: Budget=$1000, مهمتان 100%+50%, مصروف $400, 4 ساعات×$50)
+| الحقل | المتوقع | الفعلي | ✓ |
+|-------|---------|--------|---|
+| spent | $400 | $400 | ✅ |
+| progress % | 75% | 75% | ✅ |
+| Task Count | 2 | 2 | ✅ |
+| Remaining Budget | $600 | $600 | ✅ |
+| Time Logged | 4h | 4h | ✅ |
+| Cost (Time Tracking) | $200 | $200 | ✅ |
+
+> **ملاحظة:** صيغة Remaining Budget كانت معطوبة (نص حرفي "Unable to generate formula") وتم إصلاحها لـ `{Budget} - {spent}`. صيغة Cost عُدّلت لتحويل الـ Lookup (مصفوفة) لرقم عبر `VALUE(ARRAYJOIN(...))`.
 
 ---
 
