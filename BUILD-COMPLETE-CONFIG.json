@@ -1,0 +1,122 @@
+{
+  "project": "PFMS v2.0",
+  "status": "BUILD_CONFIGURATION_GENERATED",
+  "airtable": {
+    "baseId": "appPkAZ0LWnLp9eZi",
+    "apiUrl": "https://api.airtable.com/v0",
+    "tables": {
+      "TeamMembers": "Team Members",
+      "Projects": "Projects",
+      "Tasks": "Tasks",
+      "Assignments": "Assignments",
+      "Budget": "Budget",
+      "TimeTracking": "Time Tracking",
+      "Folders": "Folders",
+      "Files": "Files",
+      "Milestones": "Milestones",
+      "RisksIssues": "Risks & Issues",
+      "Tags": "Tags"
+    }
+  },
+  "softr": {
+    "workspace": "marlin390JNHBHBHJBJJM",
+    "pageCount": 7,
+    "pages": [
+      {
+        "id": "dashboard",
+        "name": "Dashboard",
+        "type": "custom"
+      },
+      {
+        "id": "projects",
+        "name": "Projects",
+        "type": "table"
+      },
+      {
+        "id": "project-detail",
+        "name": "Project Detail",
+        "type": "tabbed"
+      },
+      {
+        "id": "tasks",
+        "name": "Tasks",
+        "type": "kanban"
+      },
+      {
+        "id": "budget",
+        "name": "Budget & Reports",
+        "type": "dashboard"
+      },
+      {
+        "id": "files",
+        "name": "File Library",
+        "type": "folder-tree"
+      },
+      {
+        "id": "team",
+        "name": "Team & Resources",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "zapier": {
+    "workflowCount": 7,
+    "workflows": [
+      {
+        "id": 1,
+        "name": "Airtable Projects → Softr Dashboard"
+      },
+      {
+        "id": 2,
+        "name": "Airtable Projects → Softr Projects Grid"
+      },
+      {
+        "id": 3,
+        "name": "Airtable Tasks → Softr Kanban"
+      },
+      {
+        "id": 4,
+        "name": "Airtable Budget → Softr Stats"
+      },
+      {
+        "id": 5,
+        "name": "Airtable Files → Softr File Library"
+      },
+      {
+        "id": 6,
+        "name": "Task Assigned → Send Notification"
+      },
+      {
+        "id": 7,
+        "name": "Budget Alert: Over 80%"
+      }
+    ]
+  },
+  "accessControl": [
+    {
+      "role": "Manager",
+      "members": [
+        "ali@alexaura.com"
+      ]
+    },
+    {
+      "role": "TeamMember",
+      "members": [
+        "alyssar@alexaura.com"
+      ]
+    },
+    {
+      "role": "Freelancer",
+      "members": []
+    }
+  ],
+  "buildDate": "2026-06-19T01:50:04.727Z",
+  "nextSteps": [
+    "1. Review BUILD-SOFTR-PAGES.json for page configurations",
+    "2. Review BUILD-ZAPIER-WORKFLOWS.json for automation specs",
+    "3. Review BUILD-ACCESS-CONTROL.json for permissions",
+    "4. Manually create pages in Softr.io using configurations",
+    "5. Create Zapier Zaps using workflow specifications",
+    "6. Configure access control in Softr settings"
+  ]
+}

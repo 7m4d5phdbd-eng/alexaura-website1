@@ -1,0 +1,225 @@
+{
+  "workflows": [
+    {
+      "id": 1,
+      "name": "Airtable Projects → Softr Dashboard",
+      "description": "Sync new/updated projects to Softr Dashboard",
+      "trigger": {
+        "app": "airtable",
+        "event": "new_or_updated_record",
+        "data": {
+          "baseId": "appPkAZ0LWnLp9eZi",
+          "table": "Projects"
+        }
+      },
+      "actions": [
+        {
+          "app": "softr",
+          "event": "update_dashboard_cards",
+          "data": {
+            "workspace": "marlin390JNHBHBHJBJJM",
+            "page": "Dashboard",
+            "mapping": {
+              "projectName": "{{trigger.fields[\"Project Name\"]}}",
+              "status": "{{trigger.fields[\"Status\"]}}",
+              "owner": "{{trigger.fields[\"Owner\"]}}",
+              "budget": "{{trigger.fields[\"Budget\"]}}",
+              "spent": "{{trigger.fields[\"spent\"]}}",
+              "progress": "{{trigger.fields[\"Progress %\"]}}",
+              "priority": "{{trigger.fields[\"Priority\"]}}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Airtable Projects → Softr Projects Grid",
+      "description": "Sync project updates to Projects page grid",
+      "trigger": {
+        "app": "airtable",
+        "event": "new_or_updated_record",
+        "data": {
+          "baseId": "appPkAZ0LWnLp9eZi",
+          "table": "Projects"
+        }
+      },
+      "actions": [
+        {
+          "app": "softr",
+          "event": "update_grid_record",
+          "data": {
+            "workspace": "marlin390JNHBHBHJBJJM",
+            "page": "Projects",
+            "mapping": {
+              "Project Name": "{{trigger.fields[\"Project Name\"]}}",
+              "Status": "{{trigger.fields[\"Status\"]}}",
+              "Owner": "{{trigger.fields[\"Owner\"]}}",
+              "Progress %": "{{trigger.fields[\"Progress %\"]}}",
+              "Budget": "{{trigger.fields[\"Budget\"]}}",
+              "Spent": "{{trigger.fields[\"spent\"]}}",
+              "Due Date": "{{trigger.fields[\"Due Date\"]}}",
+              "Priority": "{{trigger.fields[\"Priority\"]}}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Airtable Tasks → Softr Kanban",
+      "description": "Sync task updates to Softr Kanban board",
+      "trigger": {
+        "app": "airtable",
+        "event": "new_or_updated_record",
+        "data": {
+          "baseId": "appPkAZ0LWnLp9eZi",
+          "table": "Tasks"
+        }
+      },
+      "actions": [
+        {
+          "app": "softr",
+          "event": "update_kanban_card",
+          "data": {
+            "workspace": "marlin390JNHBHBHJBJJM",
+            "page": "Tasks",
+            "mapping": {
+              "title": "{{trigger.fields[\"Task Name\"]}}",
+              "status": "{{trigger.fields[\"Status\"]}}",
+              "column": "{{trigger.fields[\"Status\"]}}",
+              "assignee": "{{trigger.fields[\"Assignee\"]}}",
+              "dueDate": "{{trigger.fields[\"Due Date\"]}}",
+              "priority": "{{trigger.fields[\"Priority\"]}}",
+              "color": "{% if trigger.fields[\"Priority\"] == \"High\" %}red{% elsif trigger.fields[\"Priority\"] == \"Medium\" %}orange{% else %}blue{% endif %}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Airtable Budget → Softr Stats",
+      "description": "Sync budget updates to Softr Budget page statistics",
+      "trigger": {
+        "app": "airtable",
+        "event": "new_or_updated_record",
+        "data": {
+          "baseId": "appPkAZ0LWnLp9eZi",
+          "table": "Budget"
+        }
+      },
+      "actions": [
+        {
+          "app": "softr",
+          "event": "update_statistics",
+          "data": {
+            "workspace": "marlin390JNHBHBHJBJJM",
+            "page": "Budget",
+            "metrics": {
+              "totalAllocated": "SUM(Budget.Allocated)",
+              "totalSpent": "SUM(Budget.Spent)",
+              "remaining": "SUM(Budget.Allocated) - SUM(Budget.Spent)",
+              "utilization": "(SUM(Budget.Spent) / SUM(Budget.Allocated)) * 100"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Airtable Files → Softr File Library",
+      "description": "Sync new files to Softr File Library",
+      "trigger": {
+        "app": "airtable",
+        "event": "new_record",
+        "data": {
+          "baseId": "appPkAZ0LWnLp9eZi",
+          "table": "Files"
+        }
+      },
+      "actions": [
+        {
+          "app": "softr",
+          "event": "add_file_to_library",
+          "data": {
+            "workspace": "marlin390JNHBHBHJBJJM",
+            "page": "File Library",
+            "mapping": {
+              "fileName": "{{trigger.fields[\"File Name\"]}}",
+              "folderPath": "{{trigger.fields[\"Folder\"]}}",
+              "fileType": "{{trigger.fields[\"Type\"]}}",
+              "uploadedBy": "{{trigger.fields[\"Uploaded By\"]}}",
+              "uploadDate": "{{trigger.fields[\"Upload Date\"]}}",
+              "fileUrl": "{{trigger.fields[\"File\"]}}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Task Assigned → Send Notification",
+      "description": "Send email/Slack when task is assigned to team member",
+      "trigger": {
+        "app": "airtable",
+        "event": "new_record",
+        "data": {
+          "baseId": "appPkAZ0LWnLp9eZi",
+          "table": "Assignments"
+        }
+      },
+      "actions": [
+        {
+          "app": "email",
+          "event": "send_email",
+          "data": {
+            "to": "{{trigger.fields[\"Assignee.Email\"]}}",
+            "subject": "New Task Assigned: {{trigger.fields[\"Task.Task Name\"]}}",
+            "body": "              <p>Hi {{trigger.fields[\"Assignee.Name\"]}},</p>              <p>You have been assigned a new task:</p>              <ul>                <li><strong>Task:</strong> {{trigger.fields[\"Task.Task Name\"]}}</li>                <li><strong>Project:</strong> {{trigger.fields[\"Task.Project.Project Name\"]}}</li>                <li><strong>Due Date:</strong> {{trigger.fields[\"Task.Due Date\"]}}</li>                <li><strong>Priority:</strong> {{trigger.fields[\"Task.Priority\"]}}</li>              </ul>              <p>Role: {{trigger.fields[\"Role on Task\"]}}</p>              <p>Allocation: {{trigger.fields[\"Allocation %\"]}}%</p>"
+          }
+        },
+        {
+          "app": "slack",
+          "event": "send_message",
+          "condition": "if Slack webhook available",
+          "data": {
+            "channel": "#assignments",
+            "message": ":clipboard: Task Assigned: {{trigger.fields[\"Task.Task Name\"]}} assigned to {{trigger.fields[\"Assignee.Name\"]}} ({{trigger.fields[\"Allocation %\"]}}% allocation) - Due: {{trigger.fields[\"Task.Due Date\"]}}"
+          }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Budget Alert: Over 80%",
+      "description": "Alert project owner when project budget exceeded 80%",
+      "trigger": {
+        "app": "airtable",
+        "event": "new_or_updated_record",
+        "data": {
+          "baseId": "appPkAZ0LWnLp9eZi",
+          "table": "Projects"
+        }
+      },
+      "condition": {
+        "type": "threshold",
+        "calculation": "{{trigger.fields[\"spent\"]}} > ({{trigger.fields[\"Budget\"]}} * 0.8)",
+        "description": "Only when spent > 80% of budget"
+      },
+      "actions": [
+        {
+          "app": "email",
+          "event": "send_email",
+          "data": {
+            "to": "{{trigger.fields[\"Owner.Email\"]}}",
+            "subject": "⚠️ Budget Alert: {{trigger.fields[\"Project Name\"]}} is {{calculatePercent trigger.fields[\"spent\"] trigger.fields[\"Budget\"]}}% spent",
+            "body": "              <h2>Budget Alert</h2>              <p><strong>Project:</strong> {{trigger.fields[\"Project Name\"]}}</p>              <p><strong>Budget Allocated:</strong> ${{trigger.fields[\"Budget\"]}}</p>              <p><strong>Amount Spent:</strong> ${{trigger.fields[\"spent\"]}}</p>              <p><strong>Percentage Used:</strong> {{calculatePercent trigger.fields[\"spent\"] trigger.fields[\"Budget\"]}}%</p>              <p><strong>Remaining:</strong> ${{subtractValues trigger.fields[\"Budget\"] trigger.fields[\"spent\"]}}</p>              <p style=\"color: red;\"><strong>Please review spending and adjust if needed.</strong></p>"
+          }
+        }
+      ]
+    }
+  ],
+  "totalWorkflows": 7,
+  "buildDate": "2026-06-19T01:50:04.727Z"
+}
