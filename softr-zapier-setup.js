@@ -1,0 +1,436 @@
+#!/usr/bin/env node
+
+/**
+ * PFMS v2.0 — Softr + Zapier Automation Setup
+ * This script generates configuration and setup instructions for building the PFMS app
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+// Configuration Constants
+const AIRTABLE_BASE_ID = 'appPkAZ0LWnLp9eZi';
+const SOFTR_WORKSPACE = 'marlin390JNHBHBHJBJJM'; // Update with actual workspace
+const USER_EMAIL = 'mr.cleaner312@gmail.com';
+
+// Tables in Airtable base
+const TABLES = {
+  TeamMembers: { id: 'Team Members', fields: ['Name', 'Role', 'Email', 'Department', 'Hourly Rate', 'Skills', 'Manager', 'Avatar'] },
+  Projects: { id: 'Projects', fields: ['Project Name', 'Status', 'Owner', 'Priority', 'Start Date', 'Due Date', 'Budget', 'spent', 'Progress %', 'Tags'] },
+  Tasks: { id: 'Tasks', fields: ['Task Name', 'Project', 'Parent Task', 'Status', 'Assignee', 'Priority', 'Start Date', 'Due Date', 'Time Estimate', 'Time Logged'] },
+  Assignments: { id: 'Assignments', fields: ['Task', 'Assignee', 'Role on Task', 'Allocation %', 'Status'] },
+  Budget: { id: 'Budget', fields: ['Project', 'Category', 'Allocated', 'Spent', 'Currency', 'Vendor', 'Status'] },
+  TimeTracking: { id: 'Time Tracking', fields: ['Team Member', 'Task', 'Project', 'Date', 'Hours Worked', 'Description', 'Cost', 'Status'] },
+  Folders: { id: 'Folders', fields: ['Folder Name', 'Parent Folder', 'Category', 'Owner', 'Access Level', 'Icon/Color', 'Path'] },
+  Files: { id: 'Files', fields: ['File Name', 'Folder', 'File', 'Type', 'Project', 'Task', 'Uploaded By', 'Upload Date', 'Version'] },
+  Milestones: { id: 'Milestones', fields: ['Milestone Name', 'Project', 'Target Date', 'Status', 'Deliverables'] },
+  RisksIssues: { id: 'Risks & Issues', fields: ['Title', 'Project', 'Type', 'Severity', 'Owner', 'Mitigation Plan', 'Status'] },
+  Tags: { id: 'Tags', fields: ['Tag Name', 'Category', 'Color'] }
+};
+
+// Softr Pages Configuration
+const SOFTR_PAGES = {
+  dashboard: {
+    name: 'Dashboard',
+    type: 'custom',
+    description: 'Project overview with key metrics, active projects, budget status, team workload',
+    widgets: [
+      { type: 'stat_card', title: 'Active Projects', data_source: 'Projects' },
+      { type: 'stat_card', title: 'Tasks Due This Week', data_source: 'Tasks' },
+      { type: 'stat_card', title: 'Budget Used', data_source: 'Projects' },
+      { type: 'stat_card', title: 'Team Workload', data_source: 'Team Members' },
+      { type: 'grid', title: 'Active Projects', table: 'Projects', limit: 5 },
+      { type: 'chart_pie', title: 'Budget by Project', data_source: 'Projects' },
+      { type: 'chart_bar', title: 'Team Workload', data_source: 'Team Members' },
+      { type: 'list', title: 'Recent Files', table: 'Files', limit: 5, sort: 'Upload Date DESC' }
+    ]
+  },
+  projects: {
+    name: 'Projects',
+    type: 'table',
+    description: 'All projects with status, owner, budget, progress tracking',
+    table: 'Projects',
+    fields: ['Project Name', 'Status', 'Owner', 'Progress %', 'Budget', 'spent', 'Due Date', 'Priority'],
+    filters: ['Status', 'Owner', 'Priority', 'Due Date Range'],
+    actions: ['Create', 'Edit', 'Delete', 'Click for detail']
+  },
+  project_detail: {
+    name: 'Project Detail',
+    type: 'tabbed',
+    description: 'Detailed project view with 6 tabs: Overview, Tasks, Timeline, Team, Budget, Files',
+    tabs: [
+      { name: 'Overview', type: 'info_cards', fields: ['Project Name', 'Status', 'Owner', 'Description', 'Team Members'] },
+      { name: 'Tasks', type: 'hierarchy_tree', table: 'Tasks', parent_field: 'Parent Task' },
+      { name: 'Timeline', type: 'gantt_chart', date_fields: ['Start Date', 'Due Date'] },
+      { name: 'Team', type: 'list', table: 'Assignments', filter: 'Project = {current}' },
+      { name: 'Budget', type: 'chart_and_stats', table: 'Budget', filter: 'Project = {current}' },
+      { name: 'Files', type: 'folder_tree', table: 'Files', groupby: 'Folder' }
+    ]
+  },
+  tasks: {
+    name: 'Tasks',
+    type: 'kanban',
+    description: 'Task management with Kanban board, table, and calendar views',
+    kanban_columns: ['To Do', 'In Progress', 'In Review', 'Done'],
+    status_field: 'Status',
+    filters: ['Project', 'Assignee', 'Priority', 'Due Date Range'],
+    views: ['Kanban', 'Table', 'Calendar'],
+    card_fields: ['Task Name', 'Assignee', 'Due Date', 'Priority']
+  },
+  budget: {
+    name: 'Budget & Reports',
+    type: 'dashboard',
+    description: 'Budget overview, spending by project/category, utilization reports',
+    widgets: [
+      { type: 'stat_card', title: 'Total Allocated', data: 'SUM(Budget.Allocated)' },
+      { type: 'stat_card', title: 'Total Spent', data: 'SUM(Budget.Spent)' },
+      { type: 'stat_card', title: 'Remaining', data: 'SUM(Budget.Allocated) - SUM(Budget.Spent)' },
+      { type: 'stat_card', title: 'Utilization %', data: '(SUM(Budget.Spent) / SUM(Budget.Allocated)) * 100' },
+      { type: 'chart_pie', title: 'Budget by Project', data: 'Projects.Budget' },
+      { type: 'chart_bar', title: 'Spent vs Allocated', data: 'Budget aggregation' },
+      { type: 'chart_line', title: 'Spending Over Time', data: 'Time Tracking monthly' },
+      { type: 'table', title: 'Budget Details', table: 'Budget', filters: ['Project', 'Category', 'Status', 'Date Range'] }
+    ]
+  },
+  files: {
+    name: 'File Library',
+    type: 'folder_tree',
+    description: 'Company-wide file management with unlimited folder nesting',
+    tree_root: 'Alex Aura',
+    folders_table: 'Folders',
+    files_table: 'Files',
+    parent_field: 'Parent Folder',
+    features: ['Breadcrumb', 'Back button', 'Folder navigate', 'File preview', 'Download', 'Version history', 'Access control']
+  },
+  team: {
+    name: 'Team & Resources',
+    type: 'dashboard',
+    description: 'Team member profiles, workload tracking, performance metrics',
+    widgets: [
+      { type: 'grid', table: 'Team Members', fields: ['Name', 'Role', 'Email', 'Department', 'Availability', 'Active Tasks Count'] },
+      { type: 'chart_bar', title: 'Weekly Workload', data: 'Hours logged by person' },
+      { type: 'metric', title: 'Overallocation Alert', condition: 'Hours > 40' },
+      { type: 'stats', title: 'Performance', metrics: ['Tasks Completed', 'On-time Delivery %', 'Avg Completion Time'] }
+    ]
+  }
+};
+
+// Generate Zapier Workflow Configurations
+function generateZapConfigs() {
+  return [
+    {
+      name: 'Airtable Projects → Softr Dashboard',
+      trigger: { app: 'airtable', event: 'new_or_updated_record', table: 'Projects' },
+      action: { app: 'softr', event: 'update_page_data', page: 'Dashboard' },
+      mapping: {
+        'Project Name': 'project_title',
+        'Status': 'status_badge',
+        'Budget': 'budget_value',
+        'spent': 'spent_value',
+        'Progress %': 'progress_percentage',
+        'Owner': 'owner_name'
+      }
+    },
+    {
+      name: 'Airtable Projects → Softr Projects Grid',
+      trigger: { app: 'airtable', event: 'new_or_updated_record', table: 'Projects' },
+      action: { app: 'softr', event: 'update_grid_record', page: 'Projects' },
+      mapping: {
+        'Project Name': 'name',
+        'Status': 'status',
+        'Owner': 'owner',
+        'Progress %': 'progress',
+        'Budget': 'budget',
+        'spent': 'spent',
+        'Due Date': 'due_date',
+        'Priority': 'priority'
+      }
+    },
+    {
+      name: 'Airtable Tasks → Softr Kanban',
+      trigger: { app: 'airtable', event: 'new_or_updated_record', table: 'Tasks' },
+      action: { app: 'softr', event: 'update_kanban_card', page: 'Tasks' },
+      mapping: {
+        'Task Name': 'title',
+        'Status': 'column',
+        'Assignee': 'assignee',
+        'Priority': 'color',
+        'Due Date': 'due_date',
+        'Time Estimate': 'estimate'
+      }
+    },
+    {
+      name: 'Airtable Budget → Softr Stats',
+      trigger: { app: 'airtable', event: 'new_or_updated_record', table: 'Budget' },
+      action: { app: 'softr', event: 'update_dashboard_metrics', page: 'Budget' },
+      mapping: {
+        'allocated': 'total_allocated',
+        'spent': 'total_spent',
+        'currency': 'currency_code'
+      }
+    },
+    {
+      name: 'Airtable Files → Softr File Library',
+      trigger: { app: 'airtable', event: 'new_record', table: 'Files' },
+      action: { app: 'softr', event: 'add_file_to_library', page: 'File Library' },
+      mapping: {
+        'File Name': 'filename',
+        'Folder': 'folder_path',
+        'Type': 'file_type',
+        'Uploaded By': 'uploader',
+        'Upload Date': 'date_uploaded',
+        'File': 'file_attachment'
+      }
+    },
+    {
+      name: 'Task Assigned → Send Notification',
+      trigger: { app: 'airtable', event: 'new_record', table: 'Assignments' },
+      action: { app: 'slack_or_email', event: 'send_notification' },
+      condition: 'When new assignment created',
+      message_template: 'New task assigned: {Task Name}\nProject: {Project Name}\nDue: {Due Date}\nAssigned to: {Assignee Name}'
+    },
+    {
+      name: 'Budget Alert: Over 80%',
+      trigger: { app: 'airtable', event: 'new_or_updated_record', table: 'Projects' },
+      condition: 'spent > (Budget * 0.8)',
+      action: { app: 'slack_or_email', event: 'send_alert' },
+      message_template: '⚠️ Project {Project Name} budget is {Percentage}% spent\nBudget: ${Budget}\nSpent: ${Spent}\nRemaining: ${Remaining}'
+    }
+  ];
+}
+
+// Generate Access Control Configuration
+function generateAccessControl() {
+  return {
+    Manager: {
+      pages: ['Dashboard', 'Projects', 'Project Detail', 'Tasks', 'Budget', 'Files', 'Team'],
+      actions: ['Create', 'Edit', 'Delete', 'View Reports', 'Export'],
+      data_filters: 'None (see all)',
+      budget_visibility: true,
+      hr_visibility: true,
+      finance_visibility: true
+    },
+    TeamMember: {
+      pages: ['Dashboard', 'Projects', 'Tasks', 'Files', 'Team'],
+      actions: ['Update own tasks', 'Upload files', 'View assigned'],
+      data_filters: 'Only assigned projects/tasks',
+      budget_visibility: false,
+      hr_visibility: false,
+      finance_visibility: false
+    },
+    Freelancer: {
+      pages: ['Tasks', 'Files'],
+      actions: ['View assigned', 'Upload files', 'Log time'],
+      data_filters: 'Only assigned tasks',
+      budget_visibility: false,
+      hr_visibility: false,
+      finance_visibility: false
+    }
+  };
+}
+
+// Generate Setup Instructions
+function generateInstructions() {
+  const instructions = {
+    phase1: {
+      title: 'Phase 1: Verification & Setup (30 mins)',
+      steps: [
+        '1. Verify Airtable Base: https://airtable.com/base/' + AIRTABLE_BASE_ID,
+        '2. Confirm all 11 tables exist (Team Members, Projects, Tasks, etc.)',
+        '3. Check Team Members table has at least 2 records (Ali, Alyssar)',
+        '4. Verify Projects table has sample data',
+        '5. Verify Tasks table has hierarchical structure (Parent Task self-link)',
+        '6. Verify Folders table has unlimited nesting (Parent Folder self-link)',
+        '7. Go to https://zapier.com and create account with ' + USER_EMAIL,
+        '8. In Zapier: Connect Airtable (authenticate with your Airtable account)',
+        '9. In Zapier: Verify base selection shows ' + AIRTABLE_BASE_ID
+      ]
+    },
+    phase2: {
+      title: 'Phase 2: Build Softr Pages (2-3 hours)',
+      steps: [
+        '1. Go to https://softr.io and login',
+        '2. Create new app or open existing workspace: ' + SOFTR_WORKSPACE,
+        '3. Create 6 Pages in order:',
+        '   a) Dashboard - Add stat cards, charts, active projects grid',
+        '   b) Projects - Add table grid with filters (Status, Owner, Priority)',
+        '   c) Project Detail - Add tabbed interface (6 tabs)',
+        '   d) Tasks - Add Kanban board (To Do → In Progress → In Review → Done)',
+        '   e) Budget & Reports - Add stat cards and charts',
+        '   f) File Library - Add folder tree navigator',
+        '   g) Team & Resources - Add team grid and workload charts',
+        '4. For each page: Configure data source to Airtable base'
+      ]
+    },
+    phase3: {
+      title: 'Phase 3: Create Zapier Automations (2-3 hours)',
+      steps: [
+        '1. Create Zap 1: New Projects → Update Dashboard',
+        '   - Trigger: Airtable - New/Updated Record (Projects table)',
+        '   - Action: Softr - Create/Update Page Record (Dashboard)',
+        '   - Map fields (Project Name, Status, Budget, Progress %)',
+        '',
+        '2. Create Zap 2: Projects Update → Sync Grid',
+        '   - Trigger: Airtable - New/Updated Record (Projects table)',
+        '   - Action: Softr - Update Grid (Projects page)',
+        '',
+        '3. Create Zap 3: Tasks Update → Sync Kanban',
+        '   - Trigger: Airtable - New/Updated Record (Tasks table)',
+        '   - Action: Softr - Update Kanban (Tasks page)',
+        '   - Map Status field to Kanban columns',
+        '',
+        '4. Create Zap 4: Budget Updates → Sync Stats',
+        '   - Trigger: Airtable - New/Updated Record (Budget table)',
+        '   - Action: Softr - Update Dashboard (Budget page)',
+        '',
+        '5. Create Zap 5: New Files → Sync Library',
+        '   - Trigger: Airtable - New Record (Files table)',
+        '   - Action: Softr - Add to File Library (Files page)',
+        '',
+        '6. Create Zap 6: Task Assignment → Send Notification',
+        '   - Trigger: Airtable - New Record (Assignments table)',
+        '   - Action: Slack/Email - Send Message',
+        '   - Template: "New task: {Task Name} assigned to {Assignee}"',
+        '',
+        '7. Create Zap 7: Budget Alert (80% threshold)',
+        '   - Trigger: Airtable - New/Updated Record (Projects table)',
+        '   - Condition: spent > (Budget * 0.8)',
+        '   - Action: Slack/Email - Send Alert'
+      ]
+    },
+    phase4: {
+      title: 'Phase 4: Configure Access Control (1 hour)',
+      steps: [
+        '1. In Softr: Go to Settings → User Groups',
+        '2. Create 3 groups: Manager, Team Member, Freelancer',
+        '3. For each page, set visibility rules:',
+        '   - Dashboard: All users (read-only for non-managers)',
+        '   - Projects: All users (edit for managers only)',
+        '   - Tasks: All users (can edit own tasks)',
+        '   - Budget: Manager only',
+        '   - Files: All users (except Finance/HR folders)',
+        '   - Team: Manager only',
+        '4. For restricted folders (Finance, HR):',
+        '   - Set Access Level field in Folders table = "Managers Only"',
+        '   - Hide from Team Members in File Library',
+        '5. Test: Login as Manager (Ali), test full access',
+        '6. Test: Login as Team Member (Alyssar), verify budget hidden'
+      ]
+    },
+    phase5: {
+      title: 'Phase 5: Testing & Launch (2-3 hours)',
+      steps: [
+        '1. Create sample project: "Test Project Alpha"',
+        '2. Create 3 sample tasks under the project',
+        '3. Assign tasks: Task 1 & 2 to Alyssar, Task 3 to unassigned',
+        '4. Test each page:',
+        '   a) Dashboard - Check stats update',
+        '   b) Projects - Filter by Active, sort by progress',
+        '   c) Project Detail - Expand Tasks hierarchy, check Budget tab',
+        '   d) Tasks - Drag task from "To Do" to "Done", verify Zap sync',
+        '   e) Budget - Add budget record, check spending chart',
+        '   f) Files - Create test folder, upload sample file',
+        '   g) Team - Check workload chart',
+        '5. Test Notifications: Assign task to Alyssar, check email/Slack',
+        '6. Test Budget Alert: Set project spent to 85% of budget, verify alert',
+        '7. Test Access Control:',
+        '   a) Logout',
+        '   b) Login as Alyssar',
+        '   c) Verify Budget page is hidden',
+        '   d) Verify Finance/HR folders don\'t appear',
+        '8. Share app link with team:',
+        '   - Dashboard: https://' + SOFTR_WORKSPACE + '.softr.app/dashboard',
+        '   - Projects: https://' + SOFTR_WORKSPACE + '.softr.app/projects',
+        '   - Tasks: https://' + SOFTR_WORKSPACE + '.softr.app/tasks'
+      ]
+    }
+  };
+
+  return instructions;
+}
+
+// Main Setup Runner
+function main() {
+  console.log('\n╔════════════════════════════════════════════════════════════════╗');
+  console.log('║   PFMS v2.0 — Softr + Zapier Automation Setup                 ║');
+  console.log('║   Build your project management system in 5 phases            ║');
+  console.log('╚════════════════════════════════════════════════════════════════╝\n');
+
+  const config = {
+    airtable: {
+      base_id: AIRTABLE_BASE_ID,
+      tables: Object.keys(TABLES).length,
+      tables_list: TABLES
+    },
+    softr: {
+      workspace: SOFTR_WORKSPACE,
+      pages: Object.keys(SOFTR_PAGES).length,
+      pages_config: SOFTR_PAGES
+    },
+    zapier: {
+      total_zaps: 7,
+      workflows: generateZapConfigs()
+    },
+    access_control: generateAccessControl(),
+    timeline: {
+      phase1: '30 mins',
+      phase2: '2-3 hours',
+      phase3: '2-3 hours',
+      phase4: '1 hour',
+      phase5: '2-3 hours',
+      total: '8-11 hours'
+    },
+    instructions: generateInstructions()
+  };
+
+  // Output summary
+  console.log('📊 Configuration Summary');
+  console.log('─────────────────────────────────────────────────────────────────\n');
+  console.log(`✓ Airtable Base:       ${config.airtable.base_id}`);
+  console.log(`✓ Tables:              ${config.airtable.tables}`);
+  console.log(`✓ Softr Workspace:     ${config.softr.workspace}`);
+  console.log(`✓ Pages to Build:      ${config.softr.pages}`);
+  console.log(`✓ Zapier Workflows:    ${config.zapier.total_zaps}`);
+  console.log(`✓ Access Control:      ${Object.keys(config.access_control).length} roles\n`);
+
+  // Phase-by-phase instructions
+  console.log('📋 Implementation Timeline');
+  console.log('─────────────────────────────────────────────────────────────────\n');
+  Object.entries(config.instructions).forEach(([key, phase]) => {
+    console.log(`${phase.title}`);
+    console.log(`${phase.steps.map(s => '  ' + s).join('\n')}\n`);
+  });
+
+  // Output to JSON file for reference
+  const output = {
+    timestamp: new Date().toISOString(),
+    status: 'READY TO BUILD',
+    configuration: config,
+    next_steps: [
+      '1. Read: SOFTR-ZAPIER-BUILD.md',
+      '2. Follow: Implementation phases above',
+      '3. Test: Verification checklist in Phase 5',
+      '4. Deploy: Share with team'
+    ],
+    support_files: [
+      'SOFTR-ZAPIER-BUILD.md - Complete implementation guide',
+      'SOFTR-INTEGRATION-GUIDE.md - Technical reference',
+      'SOFTR-CODE-EXAMPLES.js - Code templates',
+      'SOFTR-CUSTOM-INTEGRATIONS-GUIDE.md - Advanced patterns'
+    ]
+  };
+
+  // Write to file
+  const configFile = path.join(__dirname, 'SOFTR-ZAPIER-CONFIG.json');
+  fs.writeFileSync(configFile, JSON.stringify(output, null, 2));
+
+  console.log('\n✅ Configuration saved to: SOFTR-ZAPIER-CONFIG.json');
+  console.log('\n🚀 Ready to build! Follow the phases above.\n');
+}
+
+// Run
+if (require.main === module) {
+  main();
+}
+
+module.exports = { generateZapConfigs, generateAccessControl, generateInstructions };
