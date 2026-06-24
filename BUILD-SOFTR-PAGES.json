@@ -1,0 +1,1191 @@
+{
+  "workspace": "marlin390JNHBHBHJBJJM",
+  "pages": [
+    {
+      "id": "dashboard",
+      "name": "Dashboard",
+      "type": "custom",
+      "description": "Project overview with key metrics, active projects, budget status",
+      "sections": [
+        {
+          "type": "stats",
+          "title": "Key Metrics",
+          "columns": 4,
+          "widgets": [
+            {
+              "type": "stat_card",
+              "title": "Active Projects",
+              "metric": "COUNT(Projects WHERE Status = \"Active\")",
+              "icon": "folder",
+              "color": "blue"
+            },
+            {
+              "type": "stat_card",
+              "title": "Tasks Due This Week",
+              "metric": "COUNT(Tasks WHERE Due Date <= TODAY+7)",
+              "icon": "checklist",
+              "color": "orange"
+            },
+            {
+              "type": "stat_card",
+              "title": "Budget Used",
+              "metric": "SUM(Projects.spent) / SUM(Projects.Budget)",
+              "format": "percent",
+              "icon": "dollar",
+              "color": "green"
+            },
+            {
+              "type": "stat_card",
+              "title": "Team Workload",
+              "metric": "AVG(Team Members.Active Tasks)",
+              "icon": "people",
+              "color": "purple"
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Active Projects",
+          "layout": "grid",
+          "widget": {
+            "type": "grid",
+            "source": "Projects",
+            "filter": "Status = \"Active\"",
+            "limit": 6,
+            "columns": [
+              "Project Name",
+              "Owner",
+              "Progress %",
+              "Due Date",
+              "Priority"
+            ],
+            "sort": "Progress % DESC",
+            "actions": [
+              "view-detail",
+              "edit",
+              "delete"
+            ]
+          }
+        },
+        {
+          "type": "section",
+          "title": "Budget Overview",
+          "layout": "2-column",
+          "widgets": [
+            {
+              "type": "chart_pie",
+              "title": "Budget by Project",
+              "data": "Projects",
+              "value": "Budget",
+              "label": "Project Name"
+            },
+            {
+              "type": "chart_bar",
+              "title": "Spending Status",
+              "data": "Projects",
+              "categories": "Project Name",
+              "series": [
+                {
+                  "name": "Allocated",
+                  "value": "Budget"
+                },
+                {
+                  "name": "Spent",
+                  "value": "spent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Team Workload",
+          "widget": {
+            "type": "chart_bar",
+            "data": "Team Members",
+            "categories": "Name",
+            "value": "Active Tasks Count",
+            "threshold": 40,
+            "thresholdLabel": "Overallocation Alert"
+          }
+        },
+        {
+          "type": "section",
+          "title": "Recent Files",
+          "widget": {
+            "type": "list",
+            "source": "Files",
+            "limit": 10,
+            "columns": [
+              "File Name",
+              "Uploaded By",
+              "Upload Date",
+              "Folder"
+            ],
+            "sort": "Upload Date DESC",
+            "actions": [
+              "download",
+              "preview",
+              "delete"
+            ]
+          }
+        },
+        {
+          "type": "section",
+          "title": "Upcoming Milestones",
+          "widget": {
+            "type": "calendar",
+            "source": "Milestones",
+            "dateField": "Target Date",
+            "titleField": "Milestone Name",
+            "colorField": "Status"
+          }
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "name": "Projects",
+      "type": "table",
+      "description": "All projects with status, owner, budget, progress tracking",
+      "sections": [
+        {
+          "type": "grid",
+          "title": "All Projects",
+          "source": "Projects",
+          "columns": [
+            {
+              "field": "Project Name",
+              "width": "25%",
+              "sortable": true,
+              "filterable": true
+            },
+            {
+              "field": "Status",
+              "width": "12%",
+              "type": "badge",
+              "colors": {
+                "Active": "green",
+                "On Hold": "orange",
+                "Completed": "blue",
+                "Planning": "gray"
+              }
+            },
+            {
+              "field": "Owner",
+              "width": "15%",
+              "type": "link-field",
+              "target": "Team Members"
+            },
+            {
+              "field": "Progress %",
+              "width": "12%",
+              "type": "progress-bar"
+            },
+            {
+              "field": "Budget",
+              "width": "12%",
+              "type": "currency",
+              "format": "$"
+            },
+            {
+              "field": "spent",
+              "width": "12%",
+              "type": "currency",
+              "format": "$"
+            },
+            {
+              "field": "Due Date",
+              "width": "12%",
+              "type": "date",
+              "sortable": true
+            }
+          ],
+          "filters": [
+            {
+              "field": "Status",
+              "type": "select",
+              "multiple": true
+            },
+            {
+              "field": "Owner",
+              "type": "select",
+              "multiple": true
+            },
+            {
+              "field": "Priority",
+              "type": "select",
+              "multiple": true
+            },
+            {
+              "field": "Due Date",
+              "type": "date-range"
+            }
+          ],
+          "sort": [
+            {
+              "field": "Priority",
+              "direction": "desc"
+            },
+            {
+              "field": "Progress %",
+              "direction": "desc"
+            }
+          ],
+          "pagination": {
+            "pageSize": 50,
+            "type": "numbered"
+          },
+          "actions": {
+            "inline": [
+              "edit",
+              "delete"
+            ],
+            "row": [
+              "view-detail"
+            ],
+            "toolbar": [
+              "create",
+              "export"
+            ]
+          },
+          "createForm": {
+            "fields": [
+              "Project Name",
+              "Status",
+              "Type",
+              "Owner",
+              "Priority",
+              "Start Date",
+              "Due Date",
+              "Budget",
+              "Description",
+              "Tags"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "project-detail",
+      "name": "Project Detail",
+      "type": "tabbed",
+      "description": "Detailed project view with Overview, Tasks, Timeline, Team, Budget, Files",
+      "tabs": [
+        {
+          "id": "overview",
+          "name": "Overview",
+          "type": "info",
+          "sections": [
+            {
+              "type": "cards",
+              "layout": "3-column",
+              "fields": [
+                {
+                  "label": "Project Name",
+                  "field": "Project Name",
+                  "type": "text"
+                },
+                {
+                  "label": "Status",
+                  "field": "Status",
+                  "type": "badge"
+                },
+                {
+                  "label": "Owner",
+                  "field": "Owner",
+                  "type": "link"
+                },
+                {
+                  "label": "Start Date",
+                  "field": "Start Date",
+                  "type": "date"
+                },
+                {
+                  "label": "Due Date",
+                  "field": "Due Date",
+                  "type": "date"
+                },
+                {
+                  "label": "Priority",
+                  "field": "Priority",
+                  "type": "badge"
+                }
+              ]
+            },
+            {
+              "type": "rich-text",
+              "field": "Description",
+              "label": "Project Description"
+            },
+            {
+              "type": "team-members",
+              "label": "Team Members",
+              "source": "Assignments",
+              "filter": "Task.Project = {current}",
+              "columns": [
+                "Assignee",
+                "Role on Task",
+                "Allocation %"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tasks",
+          "name": "Tasks (Hierarchical)",
+          "type": "tree",
+          "sections": [
+            {
+              "type": "hierarchy-tree",
+              "source": "Tasks",
+              "filter": "Project = {current}",
+              "parentField": "Parent Task",
+              "columns": [
+                {
+                  "field": "Task Name",
+                  "width": "40%"
+                },
+                {
+                  "field": "Status",
+                  "width": "15%",
+                  "type": "badge"
+                },
+                {
+                  "field": "Assignee",
+                  "width": "15%",
+                  "type": "avatar"
+                },
+                {
+                  "field": "Due Date",
+                  "width": "15%",
+                  "type": "date"
+                },
+                {
+                  "field": "Priority",
+                  "width": "15%",
+                  "type": "badge"
+                }
+              ],
+              "actions": [
+                "expand",
+                "edit",
+                "delete",
+                "drag-reorder"
+              ],
+              "expandByDefault": true
+            }
+          ]
+        },
+        {
+          "id": "timeline",
+          "name": "Timeline/Gantt",
+          "type": "gantt",
+          "sections": [
+            {
+              "type": "gantt-chart",
+              "source": "Tasks",
+              "filter": "Project = {current}",
+              "startDateField": "Start Date",
+              "endDateField": "Due Date",
+              "titleField": "Task Name",
+              "assigneeField": "Assignee",
+              "progressField": "Completion %",
+              "dependencyField": "Dependencies",
+              "zoom": "week"
+            }
+          ]
+        },
+        {
+          "id": "team",
+          "name": "Team",
+          "type": "grid",
+          "sections": [
+            {
+              "type": "grid",
+              "source": "Assignments",
+              "filter": "Task.Project = {current}",
+              "columns": [
+                {
+                  "field": "Assignee",
+                  "width": "30%",
+                  "type": "link"
+                },
+                {
+                  "field": "Role on Task",
+                  "width": "25%"
+                },
+                {
+                  "field": "Allocation %",
+                  "width": "15%",
+                  "type": "percent"
+                },
+                {
+                  "field": "Status",
+                  "width": "15%",
+                  "type": "badge"
+                },
+                {
+                  "field": "Date Assigned",
+                  "width": "15%",
+                  "type": "date"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "budget",
+          "name": "Budget",
+          "type": "dashboard",
+          "sections": [
+            {
+              "type": "stats",
+              "columns": 4,
+              "widgets": [
+                {
+                  "type": "stat_card",
+                  "title": "Budget Allocated",
+                  "metric": "SUM(Budget.Allocated WHERE Project = {current})",
+                  "format": "currency"
+                },
+                {
+                  "type": "stat_card",
+                  "title": "Amount Spent",
+                  "metric": "SUM(Budget.Spent WHERE Project = {current})",
+                  "format": "currency"
+                },
+                {
+                  "type": "stat_card",
+                  "title": "Remaining",
+                  "metric": "SUM(Budget.Allocated) - SUM(Budget.Spent)",
+                  "format": "currency"
+                },
+                {
+                  "type": "stat_card",
+                  "title": "Utilization %",
+                  "metric": "(SUM(Budget.Spent) / SUM(Budget.Allocated)) * 100",
+                  "format": "percent",
+                  "warning": {
+                    "threshold": 80,
+                    "message": "Budget 80% spent"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "title": "Budget Breakdown",
+              "layout": "2-column",
+              "widgets": [
+                {
+                  "type": "chart_pie",
+                  "title": "Spending by Category",
+                  "source": "Budget",
+                  "filter": "Project = {current}",
+                  "value": "Spent",
+                  "label": "Category"
+                },
+                {
+                  "type": "chart_bar",
+                  "title": "Allocated vs Spent",
+                  "source": "Budget",
+                  "filter": "Project = {current}",
+                  "categories": "Category",
+                  "series": [
+                    {
+                      "name": "Allocated",
+                      "value": "Allocated"
+                    },
+                    {
+                      "name": "Spent",
+                      "value": "Spent"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "title": "Budget Details",
+              "source": "Budget",
+              "filter": "Project = {current}",
+              "columns": [
+                {
+                  "field": "Category",
+                  "width": "20%"
+                },
+                {
+                  "field": "Allocated",
+                  "width": "20%",
+                  "type": "currency"
+                },
+                {
+                  "field": "Spent",
+                  "width": "20%",
+                  "type": "currency"
+                },
+                {
+                  "field": "Status",
+                  "width": "20%",
+                  "type": "badge"
+                },
+                {
+                  "field": "Due Date",
+                  "width": "20%",
+                  "type": "date"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "files",
+          "name": "Files",
+          "type": "files",
+          "sections": [
+            {
+              "type": "folder-tree",
+              "source": "Files",
+              "filter": "Project = {current}",
+              "groupByFolder": true,
+              "columns": [
+                "File Name",
+                "Type",
+                "Uploaded By",
+                "Upload Date",
+                "Size"
+              ],
+              "actions": [
+                "preview",
+                "download",
+                "delete",
+                "version-history"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tasks",
+      "name": "Tasks",
+      "type": "kanban",
+      "description": "Task management with Kanban board, table, and calendar views",
+      "views": [
+        {
+          "id": "kanban",
+          "name": "Kanban Board",
+          "type": "kanban",
+          "sections": [
+            {
+              "type": "kanban-board",
+              "source": "Tasks",
+              "statusField": "Status",
+              "columns": [
+                {
+                  "id": "to-do",
+                  "label": "To Do",
+                  "statusValue": "To Do",
+                  "color": "gray"
+                },
+                {
+                  "id": "in-progress",
+                  "label": "In Progress",
+                  "statusValue": "In Progress",
+                  "color": "blue"
+                },
+                {
+                  "id": "in-review",
+                  "label": "In Review",
+                  "statusValue": "In Review",
+                  "color": "orange"
+                },
+                {
+                  "id": "done",
+                  "label": "Done",
+                  "statusValue": "Done",
+                  "color": "green"
+                }
+              ],
+              "cardFields": [
+                "Task Name",
+                "Assignee",
+                "Due Date",
+                "Priority"
+              ],
+              "filters": [
+                {
+                  "field": "Project",
+                  "type": "select",
+                  "multiple": true
+                },
+                {
+                  "field": "Assignee",
+                  "type": "select",
+                  "multiple": true
+                },
+                {
+                  "field": "Priority",
+                  "type": "select",
+                  "multiple": true
+                },
+                {
+                  "field": "Due Date",
+                  "type": "date-range"
+                }
+              ],
+              "dragDrop": true,
+              "actions": [
+                "edit",
+                "delete",
+                "add-subtask"
+              ],
+              "createAction": true
+            }
+          ]
+        },
+        {
+          "id": "table",
+          "name": "Table View",
+          "type": "grid",
+          "sections": [
+            {
+              "type": "grid",
+              "source": "Tasks",
+              "columns": [
+                {
+                  "field": "Task Name",
+                  "width": "25%",
+                  "sortable": true
+                },
+                {
+                  "field": "Project",
+                  "width": "15%",
+                  "sortable": true
+                },
+                {
+                  "field": "Status",
+                  "width": "12%",
+                  "type": "badge"
+                },
+                {
+                  "field": "Assignee",
+                  "width": "15%",
+                  "type": "avatar"
+                },
+                {
+                  "field": "Priority",
+                  "width": "10%",
+                  "type": "badge"
+                },
+                {
+                  "field": "Due Date",
+                  "width": "12%",
+                  "type": "date",
+                  "sortable": true
+                },
+                {
+                  "field": "Completion %",
+                  "width": "11%",
+                  "type": "progress"
+                }
+              ],
+              "filters": [
+                {
+                  "field": "Project",
+                  "type": "select",
+                  "multiple": true
+                },
+                {
+                  "field": "Assignee",
+                  "type": "select",
+                  "multiple": true
+                },
+                {
+                  "field": "Status",
+                  "type": "select",
+                  "multiple": true
+                },
+                {
+                  "field": "Priority",
+                  "type": "select",
+                  "multiple": true
+                },
+                {
+                  "field": "Due Date",
+                  "type": "date-range"
+                }
+              ],
+              "sort": [
+                {
+                  "field": "Priority",
+                  "direction": "desc"
+                },
+                {
+                  "field": "Due Date",
+                  "direction": "asc"
+                }
+              ],
+              "actions": [
+                "edit",
+                "delete",
+                "duplicate"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "calendar",
+          "name": "Calendar View",
+          "type": "calendar",
+          "sections": [
+            {
+              "type": "calendar",
+              "source": "Tasks",
+              "dateField": "Due Date",
+              "titleField": "Task Name",
+              "colorField": "Priority",
+              "colorMapping": {
+                "High": "red",
+                "Medium": "orange",
+                "Low": "blue"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "name": "Budget & Reports",
+      "type": "dashboard",
+      "description": "Budget overview, spending by project/category, utilization reports",
+      "sections": [
+        {
+          "type": "stats",
+          "columns": 4,
+          "widgets": [
+            {
+              "type": "stat_card",
+              "title": "Total Allocated",
+              "metric": "SUM(Budget.Allocated)",
+              "format": "currency",
+              "icon": "dollar",
+              "color": "blue"
+            },
+            {
+              "type": "stat_card",
+              "title": "Total Spent",
+              "metric": "SUM(Budget.Spent)",
+              "format": "currency",
+              "icon": "trending-down",
+              "color": "orange"
+            },
+            {
+              "type": "stat_card",
+              "title": "Remaining",
+              "metric": "SUM(Budget.Allocated) - SUM(Budget.Spent)",
+              "format": "currency",
+              "icon": "wallet",
+              "color": "green"
+            },
+            {
+              "type": "stat_card",
+              "title": "Utilization %",
+              "metric": "(SUM(Budget.Spent) / SUM(Budget.Allocated)) * 100",
+              "format": "percent",
+              "icon": "percent",
+              "color": "purple",
+              "warning": {
+                "threshold": 80
+              }
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Spending Analysis",
+          "layout": "2-column",
+          "widgets": [
+            {
+              "type": "chart_pie",
+              "title": "Budget by Project",
+              "source": "Projects",
+              "value": "Budget",
+              "label": "Project Name"
+            },
+            {
+              "type": "chart_bar",
+              "title": "Spent vs Allocated by Project",
+              "source": "Projects",
+              "categories": "Project Name",
+              "series": [
+                {
+                  "name": "Allocated",
+                  "value": "Budget"
+                },
+                {
+                  "name": "Spent",
+                  "value": "spent"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Spending by Category",
+          "layout": "2-column",
+          "widgets": [
+            {
+              "type": "chart_pie",
+              "title": "Category Breakdown",
+              "source": "Budget",
+              "value": "Spent",
+              "label": "Category"
+            },
+            {
+              "type": "chart_line",
+              "title": "Spending Over Time",
+              "source": "Time Tracking",
+              "dateField": "Date",
+              "groupBy": "month",
+              "value": "Cost"
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Budget Details",
+          "widget": {
+            "type": "grid",
+            "source": "Budget",
+            "columns": [
+              {
+                "field": "Project",
+                "width": "20%",
+                "type": "link"
+              },
+              {
+                "field": "Category",
+                "width": "15%"
+              },
+              {
+                "field": "Allocated",
+                "width": "15%",
+                "type": "currency"
+              },
+              {
+                "field": "Spent",
+                "width": "15%",
+                "type": "currency"
+              },
+              {
+                "field": "Status",
+                "width": "12%",
+                "type": "badge"
+              },
+              {
+                "field": "Due Date",
+                "width": "12%",
+                "type": "date"
+              },
+              {
+                "field": "Vendor",
+                "width": "11%"
+              }
+            ],
+            "filters": [
+              {
+                "field": "Project",
+                "type": "select",
+                "multiple": true
+              },
+              {
+                "field": "Category",
+                "type": "select",
+                "multiple": true
+              },
+              {
+                "field": "Status",
+                "type": "select",
+                "multiple": true
+              },
+              {
+                "field": "Due Date",
+                "type": "date-range"
+              }
+            ],
+            "sort": [
+              {
+                "field": "Spent",
+                "direction": "desc"
+              }
+            ],
+            "actions": [
+              "edit",
+              "delete",
+              "export"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "files",
+      "name": "File Library",
+      "type": "folder-tree",
+      "description": "Company-wide file management with unlimited folder nesting",
+      "sections": [
+        {
+          "type": "folder-tree-navigator",
+          "source": "Folders",
+          "filesSource": "Files",
+          "parentField": "Parent Folder",
+          "rootFolder": "Alex Aura",
+          "breadcrumb": true,
+          "backButton": true,
+          "layout": "sidebar-main",
+          "leftPanel": {
+            "type": "folder-tree",
+            "columns": [
+              "Folder Name",
+              "Icon/Color"
+            ],
+            "expandByDefault": 1,
+            "actions": [
+              "expand",
+              "collapse",
+              "create-subfolder",
+              "delete-folder"
+            ]
+          },
+          "mainPanel": {
+            "type": "grid",
+            "title": "Folder Contents",
+            "columns": [
+              {
+                "field": "File Name",
+                "width": "35%",
+                "sortable": true
+              },
+              {
+                "field": "Type",
+                "width": "12%",
+                "type": "badge",
+                "icon": true
+              },
+              {
+                "field": "Uploaded By",
+                "width": "20%",
+                "type": "avatar"
+              },
+              {
+                "field": "Upload Date",
+                "width": "15%",
+                "type": "date",
+                "sortable": true
+              },
+              {
+                "field": "Size",
+                "width": "10%",
+                "type": "size"
+              }
+            ],
+            "filters": [
+              {
+                "field": "Type",
+                "type": "select",
+                "multiple": true
+              },
+              {
+                "field": "Uploaded By",
+                "type": "select",
+                "multiple": true
+              },
+              {
+                "field": "Upload Date",
+                "type": "date-range"
+              }
+            ],
+            "pagination": {
+              "pageSize": 50
+            },
+            "actions": {
+              "inline": [
+                "preview",
+                "download",
+                "delete"
+              ],
+              "row": [
+                "version-history",
+                "permissions"
+              ],
+              "toolbar": [
+                "upload",
+                "new-folder"
+              ]
+            }
+          },
+          "accessControl": {
+            "field": "Access Level",
+            "hideRestrictedFolders": true,
+            "showRestrictedTo": [
+              "Manager",
+              "Owner"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "team",
+      "name": "Team & Resources",
+      "type": "dashboard",
+      "description": "Team member profiles, workload tracking, performance metrics",
+      "sections": [
+        {
+          "type": "grid",
+          "title": "Team Members",
+          "source": "Team Members",
+          "columns": [
+            {
+              "field": "Name",
+              "width": "20%",
+              "type": "avatar-name"
+            },
+            {
+              "field": "Role",
+              "width": "15%",
+              "type": "badge"
+            },
+            {
+              "field": "Department",
+              "width": "15%"
+            },
+            {
+              "field": "Email",
+              "width": "20%",
+              "type": "email"
+            },
+            {
+              "field": "Availability Status",
+              "width": "15%",
+              "type": "badge",
+              "colors": {
+                "Available": "green",
+                "Busy": "orange",
+                "Away": "gray"
+              }
+            },
+            {
+              "field": "Active Tasks Count",
+              "width": "15%",
+              "type": "number"
+            }
+          ],
+          "filters": [
+            {
+              "field": "Role",
+              "type": "select",
+              "multiple": true
+            },
+            {
+              "field": "Department",
+              "type": "select",
+              "multiple": true
+            },
+            {
+              "field": "Availability Status",
+              "type": "select",
+              "multiple": true
+            }
+          ],
+          "sort": [
+            {
+              "field": "Name",
+              "direction": "asc"
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Workload Analysis",
+          "layout": "full-width",
+          "widget": {
+            "type": "chart_bar",
+            "title": "Weekly Hours by Team Member",
+            "source": "Time Tracking",
+            "groupBy": [
+              "Team Member",
+              "week"
+            ],
+            "aggregate": "SUM(Hours Worked)",
+            "threshold": {
+              "value": 40,
+              "label": "Full-time (40h)",
+              "color": "red",
+              "condition": ">"
+            }
+          }
+        },
+        {
+          "type": "section",
+          "title": "Performance Metrics",
+          "layout": "3-column",
+          "widgets": [
+            {
+              "type": "chart_bar",
+              "title": "Tasks Completed (This Month)",
+              "source": "Tasks",
+              "filter": "MONTH(Completed Date) = MONTH(TODAY)",
+              "groupBy": "Assignee",
+              "aggregate": "COUNT(*)"
+            },
+            {
+              "type": "chart_bar",
+              "title": "On-Time Delivery %",
+              "source": "Tasks",
+              "filter": "Status = \"Done\"",
+              "calculate": "(COUNT(Due Date >= Completed Date) / COUNT(*)) * 100",
+              "groupBy": "Assignee",
+              "format": "percent"
+            },
+            {
+              "type": "chart_bar",
+              "title": "Avg Completion Time (days)",
+              "source": "Tasks",
+              "filter": "Status = \"Done\"",
+              "calculate": "AVG(DATEDIF(Start Date, Completed Date))",
+              "groupBy": "Assignee",
+              "format": "number"
+            }
+          ]
+        },
+        {
+          "type": "alerts",
+          "title": "Workload Alerts",
+          "alertRules": [
+            {
+              "condition": "Hours Worked > 40 (weekly)",
+              "message": "Team member over-allocated this week",
+              "severity": "warning"
+            },
+            {
+              "condition": "Active Tasks > 10",
+              "message": "Team member has excessive task load",
+              "severity": "warning"
+            },
+            {
+              "condition": "Availability Status = \"Away\"",
+              "message": "Team member marked as away",
+              "severity": "info"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "buildDate": "2026-06-19T01:50:04.727Z"
+}

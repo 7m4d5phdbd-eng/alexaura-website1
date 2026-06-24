@@ -1,0 +1,126 @@
+{
+  "userGroups": {
+    "Manager": {
+      "name": "Manager",
+      "description": "Full administrative access",
+      "members": [
+        "ali@alexaura.com"
+      ],
+      "permissions": {
+        "dashboard": {
+          "view": true,
+          "edit": true,
+          "export": true
+        },
+        "projects": {
+          "view": true,
+          "create": true,
+          "edit": true,
+          "delete": true
+        },
+        "tasks": {
+          "view": true,
+          "create": true,
+          "edit": true,
+          "delete": true
+        },
+        "budget": {
+          "view": true,
+          "edit": true,
+          "export": true
+        },
+        "files": {
+          "view": true,
+          "upload": true,
+          "delete": true,
+          "manageAccess": true
+        },
+        "team": {
+          "view": true,
+          "manage": true
+        }
+      },
+      "dataFilters": null
+    },
+    "TeamMember": {
+      "name": "Team Member",
+      "description": "Limited access to assigned work",
+      "members": [
+        "alyssar@alexaura.com"
+      ],
+      "permissions": {
+        "dashboard": {
+          "view": true,
+          "edit": false,
+          "export": false
+        },
+        "projects": {
+          "view": true,
+          "create": false,
+          "edit": false,
+          "delete": false
+        },
+        "tasks": {
+          "view": true,
+          "create": false,
+          "edit": "own_only",
+          "delete": false
+        },
+        "budget": {
+          "view": false,
+          "edit": false,
+          "export": false
+        },
+        "files": {
+          "view": true,
+          "upload": "own_folder",
+          "delete": "own_files",
+          "manageAccess": false
+        },
+        "team": {
+          "view": false,
+          "manage": false
+        }
+      },
+      "dataFilters": {
+        "projects": "Owner = current_user OR assigned_member = current_user",
+        "tasks": "Assignee = current_user",
+        "files": "Access Level != \"Managers Only\""
+      }
+    },
+    "Freelancer": {
+      "name": "Freelancer",
+      "description": "Limited to assigned tasks and files",
+      "members": [],
+      "permissions": {
+        "dashboard": {
+          "view": false
+        },
+        "projects": {
+          "view": false
+        },
+        "tasks": {
+          "view": "assigned_only",
+          "create": false,
+          "edit": "own_status",
+          "delete": false
+        },
+        "budget": {
+          "view": false
+        },
+        "files": {
+          "view": "project_files",
+          "upload": true,
+          "delete": false
+        },
+        "team": {
+          "view": false
+        }
+      },
+      "dataFilters": {
+        "tasks": "Assignee = current_user"
+      }
+    }
+  },
+  "buildDate": "2026-06-19T01:50:04.727Z"
+}
